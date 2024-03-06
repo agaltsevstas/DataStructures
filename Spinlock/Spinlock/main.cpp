@@ -110,6 +110,10 @@ void Spinlock(const std::string name)
 
 int main(int argc, const char * argv[])
 {
+    std::atomic<bool> flag = false;
+    bool expected = true;
+    const bool desired = true;
+    bool exchanged = flag.compare_exchange_strong(expected, desired);
     // custom::Spinlock
     {
         Spinlock<custom::Spinlock>("custom::Spinlock");
@@ -118,14 +122,15 @@ int main(int argc, const char * argv[])
     {
         Spinlock<cv::Spinlock>("cv::Spinlock");
     }
-    // atomic::Spinlock
+    // atomic
     {
-        Spinlock<atomic::Spinlock>("atomic::Spinlock");
+        Spinlock<atomic::compare_exchange_strong::Spinlock>("atomic::compare_exchange_strong::Spinlock");
+        Spinlock<atomic::compare_exchange_weak::Spinlock>("atomic::compare_exchange_weak::Spinlock");
     }
     // atomicflag::Spinlock
     {
-        Spinlock<atomicflag::Spinlock11>("atomicflag::Spinlock11");
-        Spinlock<atomicflag::Spinlock20>("atomicflag::Spinlock20");
+        Spinlock<atomic_flag::Spinlock11>("atomic_flag::Spinlock11");
+        Spinlock<atomic_flag::Spinlock20>("atomic_flag::Spinlock20");
     }
     
     return 0;

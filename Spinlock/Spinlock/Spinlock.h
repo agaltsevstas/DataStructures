@@ -84,8 +84,7 @@ namespace cv
         
         bool Try_lock() noexcept
         {
-            bool expected = false;
-            return _flag.compare_exchange_strong(expected, true);
+            return !_flag.exchange(true);
         }
         
         void Unlock() noexcept
@@ -104,39 +103,72 @@ namespace cv
 // 3 Способ: std::atomic
 namespace atomic
 {
-    class Spinlock
+    // compare_exchange_weak
+    namespace compare_exchange_strong
     {
-        Spinlock(const Spinlock&) = delete;
-        
-    public:
-        Spinlock() = default;
-        ~Spinlock() = default;
-        
-        void Lock() noexcept
+        class Spinlock
         {
-            while(_flag);
-            bool expected = false;
-            _flag.compare_exchange_strong(expected, true);
-        }
-        
-        bool Try_lock() noexcept
+            Spinlock(const Spinlock&) = delete;
+            
+        public:
+            Spinlock() = default;
+            ~Spinlock() = default;
+            
+            void Lock() noexcept
+            {
+                while(_flag);
+                bool expected = false;
+                _flag.compare_exchange_strong(expected, true);
+            }
+            
+            bool Try_lock() noexcept
+            {
+                bool expected = false;
+                return _flag.compare_exchange_strong(expected, true);
+            }
+            
+            void Unlock() noexcept
+            {
+                _flag = false;
+            }
+            
+        private:
+            std::atomic<bool> _flag = ATOMIC_FLAG_INIT; // false
+        };
+    }
+    
+    // compare_exchange_strong
+    namespace compare_exchange_weak
+    {
+        class Spinlock
         {
-            bool expected = false;
-            return _flag.compare_exchange_strong(expected, true);
-        }
-        
-        void Unlock() noexcept
-        {
-            _flag = false;
-        }
-        
-    private:
-        std::atomic<bool> _flag = ATOMIC_FLAG_INIT; // false
-    };
+        public:
+            void Lock()
+            {
+                bool expected = false;
+                while (!_flag.compare_exchange_weak(expected, true, std::memory_order_acquire)) // может быть ложное срабатывания
+                    expected = false;
+            }
+            
+            void Try_lock()
+            {
+                bool expected = false;
+                _flag.compare_exchange_weak(expected, true, std::memory_order_acquire);
+            }
+         
+            void Unlock()
+            {
+                _flag.store(false, std::memory_order_release);
+            }
+         
+        private:
+            std::atomic<bool> _flag;
+        };
+    }
 }
 
 // 4 Способ: std::atomic_flag
-namespace atomicflag
+namespace atomic_flag
 {
     // С++11
     class Spinlock11
