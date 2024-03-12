@@ -14,4 +14,9 @@
      - контекст выполнения не позволяет переходить в заблокированное состояние.
  Минусы:
      - при длительной блокировке невыгоден - пустая трата процессорных ресурсов.
+     
+# Сайты:
+[Ох уж этот std::make_shared…](https://habr.com/ru/articles/509004/) <br/>
+[Can you make a std::shared_ptr manage an array allocated with new T?](https://stackoverflow.com/questions/13061979/can-you-make-a-stdshared-ptr-manage-an-array-allocated-with-new-t) <br/>
+[What can std::remove_extent be used for?](https://stackoverflow.com/questions/31623862/what-can-stdremove-extent-be-used-for) <br/>
 
