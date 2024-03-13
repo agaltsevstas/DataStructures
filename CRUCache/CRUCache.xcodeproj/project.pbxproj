@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8076FB782AE1C0490067767B /* CRUCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8076FB772AE1C0490067767B /* CRUCache.cpp */; };
+		8054905E2BA1BEF000BFD76D /* CRUCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8054905D2BA1BEF000BFD76D /* CRUCache.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -23,8 +23,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8054905D2BA1BEF000BFD76D /* CRUCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CRUCache.cpp; path = CRUCache/CRUCache.cpp; sourceTree = "<group>"; };
 		8076FB6D2AE1C0060067767B /* CRUCache */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CRUCache; sourceTree = BUILT_PRODUCTS_DIR; };
-		8076FB772AE1C0490067767B /* CRUCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CRUCache.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,7 +41,7 @@
 		8076FB642AE1C0060067767B = {
 			isa = PBXGroup;
 			children = (
-				8076FB772AE1C0490067767B /* CRUCache.cpp */,
+				8054905D2BA1BEF000BFD76D /* CRUCache.cpp */,
 				8076FB6E2AE1C0060067767B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -111,7 +111,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8076FB782AE1C0490067767B /* CRUCache.cpp in Sources */,
+				8054905E2BA1BEF000BFD76D /* CRUCache.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

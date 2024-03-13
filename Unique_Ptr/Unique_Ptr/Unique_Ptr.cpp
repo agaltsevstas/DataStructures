@@ -61,7 +61,7 @@ namespace STD
         [[nodiscard("Get")]] element_type* Get() noexcept;
         [[nodiscard("Get")]] const element_type* Get() const noexcept;
         [[nodiscard("Get_Deleter")]] Deleter& Get_Deleter();
-        [[nodiscard("*")]] element_type& operator*() const noexcept;
+        [[nodiscard("*")]] element_type& operator*() noexcept;
         element_type& operator[](uint64_t i); // C++17: можно обращаться к элементам массива
         void Swap(Unique_Ptr& other);
         void Reset();
@@ -120,6 +120,7 @@ namespace STD
         
         _deleter(_ptr);
         _ptr = std::exchange(other._ptr, nullptr); // std::move не работает с сырыми указателями
+        _deleter = std::move(other._deleter);
         std::cout << "operator= delete object and move" << std::endl;
         return *this;
     }
@@ -149,7 +150,7 @@ namespace STD
     }
 
     template <class TClass, typename Deleter>
-    std::remove_extent_t<TClass>& Unique_Ptr<TClass, Deleter>::operator*() const noexcept
+    std::remove_extent_t<TClass>& Unique_Ptr<TClass, Deleter>::operator*() noexcept
     {
         return *Get();
     }
@@ -229,6 +230,7 @@ int main()
         number2_ptr = number2.Get();
         
         Unique_Ptr<int> number3(std::move(number1));
+        *number3 = 3;
         number1_ptr = number1.Get();
         number2_ptr = number2.Get();
         auto number3_ptr = number2.Get();
@@ -252,6 +254,7 @@ int main()
         Unique_Ptr<int, decltype(number1.Get_Deleter())> number2(new int(2), number1.Get_Deleter());
         Unique_Ptr<int, Default_Deleter<int>> number3(new int(3)); // Вызовется functor deleter
         Unique_Ptr<int, Default_Deleter<int[]>> mass(new int[10]); // Без указания Default_Deleter<int[]> выберет Default_Deleter<int> по-умолчанию и будет утечка памяти для 9 элементов
+        Unique_Ptr<int[], Default_Deleter<int[]>> mass2(new int[10]); // C++17
     }
     
     return 0;
