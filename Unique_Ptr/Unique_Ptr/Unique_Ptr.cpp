@@ -17,7 +17,7 @@ namespace STD
             if (ptr)
             {
                 delete ptr;
-//                ptr = nullptr; // почему-то при выходе nullptr отбрасывает
+                ptr = nullptr; // почему-то при выходе nullptr отбрасывает
             }
         }
     };
@@ -211,7 +211,7 @@ int main()
      */
     function(Unique_Ptr<int>(new int(10)), Exception(1));
     
-    // Constructor, move, swap, reset
+    // Constructor, Move, Swap, Reset
     {
         // Unique_Ptr<void> void_ptr((void*)new int); // Запрет на создание void, конструктор = delete
         Unique_Ptr<int> number_null;
@@ -228,8 +228,7 @@ int main()
         number1_ptr = number1.Get();
         number2_ptr = number2.Get();
         
-//        Unique_Ptr<int> number3(std::move(number1));
-        Unique_Ptr<int> number3(new int(3));
+        Unique_Ptr<int> number3(std::move(number1));
         number1_ptr = number1.Get();
         number2_ptr = number2.Get();
         auto number3_ptr = number2.Get();
