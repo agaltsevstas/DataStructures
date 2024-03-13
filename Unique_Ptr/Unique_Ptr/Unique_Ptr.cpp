@@ -17,7 +17,7 @@ namespace STD
             if (ptr)
             {
                 delete ptr;
-                ptr = nullptr;
+//                ptr = nullptr; // почему-то при выходе nullptr отбрасывает
             }
         }
     };
@@ -64,9 +64,7 @@ namespace STD
         [[nodiscard("*")]] element_type& operator*() const noexcept;
         element_type& operator[](uint64_t i); // C++17: можно обращаться к элементам массива
         void Swap(Unique_Ptr& other);
-        
-        // Reset - менее безопасный чем Make_Shared
-        void Reset(TClass* ptr = nullptr);
+        void Reset();
         
     private:
         element_type* _ptr = nullptr;
@@ -171,23 +169,18 @@ namespace STD
 
     // Reset - менее безопасный чем Make_Shared
     template <class TClass, typename Deleter>
-    void Unique_Ptr<TClass, Deleter>::Reset(TClass* ptr)
+    void Unique_Ptr<TClass, Deleter>::Reset()
     {
-        deleter(_ptr);
         std::cout << "delete object" << std::endl;
-        
-        if (ptr)
-        {
-            _ptr = ptr;
-            std::cout << "reset object" << std::endl;
-        }
+        _deleter(_ptr); // почему-то при выходе nullptr отбрасывает
+        _ptr = nullptr;
     }
 
     // Make_Shared - более безопасный чем Shared_Ptr::Reset
     template <class TClass, typename ...TArgs>
     Unique_Ptr<TClass> Make_Unique(TArgs&& ...iArgs)
     {
-//        std::allocate_unique<TClass>(allocator<TClass>(), std::forward<_Args>(iArgs)...);
+        // std::allocate_unique<TClass>(allocator<TClass>(), std::forward<_Args>(iArgs)...);
         return Unique_Ptr<TClass>(new TClass(std::forward<TArgs>(iArgs)...));
     }
 }
@@ -218,7 +211,7 @@ int main()
      */
     function(Unique_Ptr<int>(new int(10)), Exception(1));
     
-    // Constructor, move, swap
+    // Constructor, move, swap, reset
     {
         // Unique_Ptr<void> void_ptr((void*)new int); // Запрет на создание void, конструктор = delete
         Unique_Ptr<int> number_null;
@@ -235,9 +228,14 @@ int main()
         number1_ptr = number1.Get();
         number2_ptr = number2.Get();
         
-        Unique_Ptr<int> number3(std::move(number1));
+//        Unique_Ptr<int> number3(std::move(number1));
+        Unique_Ptr<int> number3(new int(3));
         number1_ptr = number1.Get();
         number2_ptr = number2.Get();
+        auto number3_ptr = number2.Get();
+        
+        number3.Reset();
+        number3_ptr = number2.Get();
         
         // Unique_Ptr<int> mass(new int[10]); // Вызовется Default_Deleter<int> по-умолчанию и будет утечка памяти для 9 элементов
         Unique_Ptr<int[]> mass(new int[10]); // C++17: Вызовется правильный deleter
