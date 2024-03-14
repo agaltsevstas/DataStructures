@@ -363,6 +363,18 @@ namespace STD
         }
     }
 
+    /*
+     make_shared - функция, не требующая дублирования типа (auto ptr = make_shared<int>(10)). Стоит использовать make_shared вместо shared_ptr<T>(new T()). make_shared - нужна для повышения производительности по сравнению shared_ptr(new), которая с помощью вызова конструктора требуют минимум две аллокации: одну — для размещения объекта, вторую — для Control Block.
+     Плюсы:
+     - не нужно писать new.
+     - там не нужно дублировать тип shared<int> number(new int(1)) -> auto number = make_shared<int>(1).
+     - make_shared производит одно выделение памяти вместе: аллокация управляемого объекта + Control Block(shared_count (сильные ссылки), weak_count (слабые ссылки), allocator, deleter), вместо раздельного выделения памяти shared_ptr.
+     Минусы:
+     - не может использовать deleter.
+     - перегруженные operator new и operator delete в классе будут проигнорированы в make_shared.
+     - make_shared не может вызывать private конструкторы внутри метода (например, синглтон).
+     - для make_shared нужно ждать shared_count == weak_count == 0, чтобы удалить объект + Control Block.
+     */
     // Make_Shared - более безопасный чем Shared_Ptr::Reset
     template <class TClass, typename ...TArgs>
     Shared_Ptr<TClass> Make_Shared(TArgs&& ...iArgs)

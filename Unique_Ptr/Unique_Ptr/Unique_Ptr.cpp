@@ -214,6 +214,15 @@ namespace STD
         _ptr = nullptr;
     }
 
+    /*
+     make_unique - функция, не требующие дублирования типа (auto ptr = make_unique<int>(10)). Стоит использовать make_unique вместо unique_ptr<T>(new T()).
+     Плюсы:
+     - не нужно писать new.
+     - там не нужно дублировать тип unique_ptr<int> number(new int(1)) -> auto number = make_unique<int>(1).
+     Минусы:
+     - не может использовать deleter.
+     - перегруженные operator new и operator delete в классе будут проигнорированы в make_unique.
+     */
     // Make_Shared - более безопасный чем Shared_Ptr::Reset
     template <class TClass, typename ...TArgs>
     Unique_Ptr<TClass> Make_Unique(TArgs&& ...iArgs)
