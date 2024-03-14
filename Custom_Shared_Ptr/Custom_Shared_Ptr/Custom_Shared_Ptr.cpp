@@ -3,6 +3,7 @@
 
 
 /*
+ Лекция: https://www.youtube.com/watch?v=9ZSBOfTd-sc&ab_channel=%D0%9C%D0%B5%D1%89%D0%B5%D1%80%D0%B8%D0%BD%D0%98%D0%BB%D1%8C%D1%8F
  Сайты: https://stackoverflow.com/questions/31623862/what-can-stdremove-extent-be-used-for
         https://stackoverflow.com/questions/13061979/can-you-make-a-stdshared-ptr-manage-an-array-allocated-with-new-t
  */
@@ -43,6 +44,7 @@ namespace STD
     public:
         /// Конструктор по-умолчанию
         Custom_Shared_Ptr() noexcept;
+        Custom_Shared_Ptr(decltype(nullptr)) noexcept;
         template <typename Deleter = Default_Deleter<element_type>>
         explicit Custom_Shared_Ptr(element_type* iObject, Deleter deleter = Deleter()) noexcept;
         /// Конструктор копирования
@@ -52,15 +54,18 @@ namespace STD
         /// Деструктор
         ~Custom_Shared_Ptr() noexcept;
         /// Оператор копирования
-        [[nodiscard]] Custom_Shared_Ptr& operator=(const Custom_Shared_Ptr& other);
+        Custom_Shared_Ptr& operator=(const Custom_Shared_Ptr& other);
         /// Оператор перемещения
         Custom_Shared_Ptr& operator=(Custom_Shared_Ptr&& other);
+        Custom_Shared_Ptr& operator=(decltype(nullptr));
         auto operator<=>(const Custom_Shared_Ptr&) const = default; // сравнение по-умолчанию
-        bool operator==(Custom_Shared_Ptr&& other); // Особый случай
-        [[nodiscard("Get")]] element_type* Get() noexcept;
-        [[nodiscard("Get")]] const element_type* Get() const noexcept;
-        [[nodiscard("*")]] element_type& operator*() noexcept;
-        element_type& operator[](uint64_t i); // C++17: можно обращаться к элементам массива
+        bool operator==(const Custom_Shared_Ptr& other); // Особый случай
+        element_type* Get() noexcept;
+        const element_type* Get() const noexcept;
+        element_type& operator*() noexcept;
+        element_type* operator->() noexcept;
+        // operator const void*() const noexcept; // object == nullptr
+        [[nodiscard]] element_type& operator[](uint64_t i); // C++17: можно обращаться к элементам массива
         void Swap(Custom_Shared_Ptr& other);
         [[nodiscard("Unique")]] bool Unique() const noexcept;
         [[nodiscard("Use_Count")]] uint64_t Use_Count() const noexcept;
@@ -88,10 +93,16 @@ namespace STD
     }
 
     template <class TClass>
+    Custom_Shared_Ptr<TClass>::Custom_Shared_Ptr(decltype(nullptr)) noexcept
+    {
+        Custom_Shared_Ptr();
+    }
+
+    template <class TClass>
     template <typename Deleter>
     Custom_Shared_Ptr<TClass>::Custom_Shared_Ptr(element_type* ptr, Deleter deleter) noexcept :
     _ptr(ptr),
-    _count(new uint64_t(1)),
+    _count(ptr ? new uint64_t(1) : nullptr),
     _deleter(deleter)
     {
         std::cout << "Constructor new" << std::endl;
@@ -149,9 +160,6 @@ namespace STD
         if (this == &other) // object = object
             return *this;
         
-        if (!other._count || !other._ptr)
-            throw "_count or _ptr - nullptr!";
-        
         if (_count) // Custom_Shared_Ptr<T> object1(object2);
         {
             if (--(*_count) == 0)  // object1 = std::move(object2)
@@ -179,9 +187,6 @@ namespace STD
         if (this == &other) // object = std::move(object)
             return *this;
         
-        if (!other._count || !other._ptr)
-            throw "_count or _ptr - nullptr!";
-        
         if (_count) // Custom_Shared_Ptr<T> object1(std::move(object2));
         {
             if (--(*_count) == 0)  // object1 = std::move(object2)
@@ -194,17 +199,34 @@ namespace STD
                 std::cout << "decrease count - " << *_count << std::endl;
         }
         
-        _count = std::exchange(other._count, nullptr); // std::move не работает с сырыми указателями
         _ptr = std::exchange(other._ptr, nullptr); // std::move не работает с сырыми указателями
+        _count = std::exchange(other._count, nullptr); // std::move не работает с сырыми указателями
         _deleter = std::move(other._deleter); // std::move не работает с сырыми указателями
         std::cout << "operator=" << std::endl;
         return *this;
     }
 
     template <class TClass>
-    bool Custom_Shared_Ptr<TClass>::operator==(Custom_Shared_Ptr&& other)
+    Custom_Shared_Ptr<TClass>& Custom_Shared_Ptr<TClass>::operator=(decltype(nullptr))
     {
-        return _count == other._count && _ptr == other._ptr; // сравниваем адреса указателей
+        if (_count) // Custom_Shared_Ptr<T> object1 = nullptr;
+        {
+            if (--(*_count) == 0)  // object1 = nullptr
+            {
+                _deleter(_ptr);
+                delete _count;
+                std::cout << "delete object" << std::endl;
+            }
+            else
+                std::cout << "decrease count - " << *_count << std::endl;
+        }
+        return *this;
+    }
+
+    template <class TClass>
+    bool Custom_Shared_Ptr<TClass>::operator==(const Custom_Shared_Ptr& other)
+    {
+        return _ptr == other._ptr && _count == other._count; // сравниваем адреса указателей
     }
 
     template <class TClass>
@@ -225,6 +247,20 @@ namespace STD
         return *Get();
     }
 
+    template <class TClass>
+    std::remove_extent_t<TClass>* Custom_Shared_Ptr<TClass>::operator->() noexcept
+    {
+        return Get();
+    }
+
+    /*
+     template <class TClass>
+     Custom_Shared_Ptr<TClass>::operator const void*() const noexcept
+     {
+         return Get(); // object == nullptr
+     }
+     */
+
     /// C++17: можно обращаться к элементам массива
     template <class TClass>
     std::remove_extent_t<TClass>& Custom_Shared_Ptr<TClass>::operator[](uint64_t i)
@@ -235,8 +271,8 @@ namespace STD
     template <class TClass>
     void Custom_Shared_Ptr<TClass>::Swap(Custom_Shared_Ptr& other)
     {
-        std::swap(_count, other._count);
         std::swap(_ptr, other._ptr);
+        std::swap(_count, other._count);
     }
 
     template <class TClass>
@@ -312,8 +348,7 @@ void function(const STD::Custom_Shared_Ptr<T>& ptr, const auto& value)
 int main()
 {
     using namespace STD;
-
-    std::shared_ptr<int> n(new int(1));
+    
     /*
      До C++17, После C++17 вроде как проблема решена
      Компилятор может оптимизировать порядок выполнения:
@@ -326,7 +361,6 @@ int main()
     // Constructor, Move, Swap, Reset
     {
          // Custom_Shared_Ptr<void> void_ptr((void*)new int); // Запрет на создание void, конструктор = delete
-        Custom_Shared_Ptr<int> number_null;
         int* value = new int(5);
         Custom_Shared_Ptr<int> number(value); // Bad practice: класть в конструктор сырой указатель, возможен двойной delete
         Custom_Shared_Ptr<int> number1(new int(1)); // Good practise: выделять в конструктор динамическую память

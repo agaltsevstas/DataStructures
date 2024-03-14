@@ -19,13 +19,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Custom_Shared_Ptr.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Shared_Ptr\Shared_Ptr\ControlBlock.h" />
+    <ClInclude Include="..\..\Shared_Ptr\Shared_Ptr\Shared_Ptr.h" />
+    <ClInclude Include="Weak_Ptr.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{f24a984a-f9d4-4be5-9542-13244e1be23f}</ProjectGuid>
-    <RootNamespace>CustomSharedPtr</RootNamespace>
+    <ProjectGuid>{0751e6ac-4c57-4e62-9ab6-f0c9dad55800}</ProjectGuid>
+    <RootNamespace>WeakPtr</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -107,7 +112,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>../../Shared_Ptr/Shared_Ptr/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

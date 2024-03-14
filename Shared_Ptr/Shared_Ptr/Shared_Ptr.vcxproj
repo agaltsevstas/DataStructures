@@ -19,13 +19,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Custom_Shared_Ptr.cpp" />
+    <ClInclude Include="ControlBlock.h" />
+    <ClInclude Include="Shared_Ptr.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{f24a984a-f9d4-4be5-9542-13244e1be23f}</ProjectGuid>
-    <RootNamespace>CustomSharedPtr</RootNamespace>
+    <ProjectGuid>{4b6af828-ac42-485f-9c34-99ce9e3f7840}</ProjectGuid>
+    <RootNamespace>SharedPtr</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

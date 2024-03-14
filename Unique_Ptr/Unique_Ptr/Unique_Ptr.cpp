@@ -7,6 +7,10 @@
         https://stackoverflow.com/questions/13061979/can-you-make-a-stdshared-ptr-manage-an-array-allocated-with-new-t
  */
 
+/*
+ Unique_Ptr (сильный указатель - владеет ресурсом): 1 указатель может ссылаться только на один объект, конструктор копирования = delete, оператор копирования = delete. При вызове деструктора удаляет объект.
+ */
+
 namespace STD
 {
     template <class T>
@@ -49,6 +53,7 @@ namespace STD
     public:
         /// Конструктор по-умолчанию
         Unique_Ptr() noexcept;
+        Unique_Ptr(decltype(nullptr)) noexcept;
         explicit Unique_Ptr(element_type* iObject, Deleter deleter = Deleter()) noexcept;
         /// Конструктор перемещеиня
         explicit Unique_Ptr(Unique_Ptr&& other) noexcept;
@@ -56,13 +61,16 @@ namespace STD
         ~Unique_Ptr() noexcept;
         /// Оператор перемещения
         Unique_Ptr& operator=(Unique_Ptr&& other);
+        Unique_Ptr& operator=(decltype(nullptr));
         auto operator<=>(const Unique_Ptr&) const = default; // сравнение по-умолчанию
         bool operator==(Unique_Ptr&& other); // Особый случай
-        [[nodiscard("Get")]] element_type* Get() noexcept;
-        [[nodiscard("Get")]] const element_type* Get() const noexcept;
-        [[nodiscard("Get_Deleter")]] Deleter& Get_Deleter();
-        [[nodiscard("*")]] element_type& operator*() noexcept;
-        element_type& operator[](uint64_t i); // C++17: можно обращаться к элементам массива
+        element_type* Get() noexcept;
+        const element_type* Get() const noexcept;
+        Deleter& Get_Deleter();
+        element_type& operator*() noexcept;
+        element_type* operator->() noexcept;
+        // operator const void*() const noexcept; // object == nullptr
+        [[nodiscard]] element_type& operator[](uint64_t i); // C++17: можно обращаться к элементам массива
         void Swap(Unique_Ptr& other);
         void Reset();
         
@@ -90,6 +98,12 @@ namespace STD
     _deleter(deleter)
     {
         std::cout << "Constructor new" << std::endl;
+    }
+
+    template <class TClass, typename Deleter>
+    Unique_Ptr<TClass, Deleter>::Unique_Ptr(decltype(nullptr)) noexcept
+    {
+        Unique_Ptr();
     }
 
     /// Конструктор перемещения
@@ -126,6 +140,15 @@ namespace STD
     }
 
     template <class TClass, typename Deleter>
+    Unique_Ptr<TClass, Deleter>& Unique_Ptr<TClass, Deleter>::operator=(decltype(nullptr))
+    {
+        _deleter(_ptr);
+        _ptr = nullptr;
+        std::cout << "delete object" << std::endl;
+        return *this;
+    }
+
+    template <class TClass, typename Deleter>
     bool Unique_Ptr<TClass, Deleter>::operator==(Unique_Ptr&& other)
     {
         return _ptr == other._ptr; // сравниваем адреса указателей
@@ -144,15 +167,29 @@ namespace STD
     }
 
     template <class TClass, typename Deleter>
-    Deleter& Unique_Ptr<TClass, Deleter>::Get_Deleter()
-    {
-        return _deleter;
-    }
-
-    template <class TClass, typename Deleter>
     std::remove_extent_t<TClass>& Unique_Ptr<TClass, Deleter>::operator*() noexcept
     {
         return *Get();
+    }
+
+    template <class TClass, typename Deleter>
+    std::remove_extent_t<TClass>* Unique_Ptr<TClass, Deleter>::operator->() noexcept
+    {
+        return Get();
+    }
+
+    /*
+     template <class TClass, typename Deleter>
+     Unique_Ptr<TClass, Deleter>::operator const void*() const noexcept
+     {
+         return Get(); // object == nullptr
+     }
+     */
+
+    template <class TClass, typename Deleter>
+    Deleter& Unique_Ptr<TClass, Deleter>::Get_Deleter()
+    {
+        return _deleter;
     }
 
     /// C++17: можно обращаться к элементам массива
