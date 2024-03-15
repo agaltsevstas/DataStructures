@@ -306,6 +306,9 @@ namespace STD
     template <class TClass>
     void Shared_Ptr<TClass>::Swap(Shared_Ptr& other)
     {
+        if (this == &other) // object.Swap(object)
+            return;
+        
         std::swap(_controlBlock, other._controlBlock);
         std::swap(_ptr, other._ptr);
     }

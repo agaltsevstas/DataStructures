@@ -202,7 +202,11 @@ namespace STD
     template <class TClass, typename Deleter>
     void Unique_Ptr<TClass, Deleter>::Swap(Unique_Ptr& other)
     {
+        if (this == &other) // object.Swap(object)
+            return;
+        
         std::swap(_ptr, other._ptr);
+        std::swap(_deleter, other._deleter);
     }
 
     // Reset - менее безопасный чем Make_Shared

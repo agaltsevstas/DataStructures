@@ -214,10 +214,13 @@ namespace STD
     }
 
     template <class TClass>
-    void Weak_Ptr<TClass>::Swap(Weak_Ptr& ptr)
+    void Weak_Ptr<TClass>::Swap(Weak_Ptr& other)
     {
-        std::swap(_ptr, ptr._ptr);
-        std::swap(_controlBlock, ptr._controlBlock);
+        if (this == &other) // object.Swap(object)
+            return;
+        
+        std::swap(_ptr, other._ptr);
+        std::swap(_controlBlock, other._controlBlock);
     }
 
     template <class TClass>

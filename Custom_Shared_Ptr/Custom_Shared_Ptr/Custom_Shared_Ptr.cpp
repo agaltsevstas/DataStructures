@@ -271,6 +271,9 @@ namespace STD
     template <class TClass>
     void Custom_Shared_Ptr<TClass>::Swap(Custom_Shared_Ptr& other)
     {
+        if (this == &other) // object.Swap(object)
+            return;
+        
         std::swap(_ptr, other._ptr);
         std::swap(_count, other._count);
     }
