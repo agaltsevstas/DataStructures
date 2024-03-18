@@ -40,7 +40,7 @@ namespace STD
     template <class TClass>
     class Custom_Shared_Ptr
     {
-        using element_type = std::remove_extent_t<TClass>; // C++17: Для подддержки использования типа T[] - Unique_Ptr<int[]> mass_deleter2(new int[10]);
+        using element_type = std::remove_extent_t<TClass>; // C++17: Для подддержки использования типа T[] - Unique_Ptr<int[]> mass(new int[10]);
     public:
         /// Конструктор по-умолчанию
         Custom_Shared_Ptr() noexcept;

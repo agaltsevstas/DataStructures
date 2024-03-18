@@ -22,7 +22,7 @@ private:
 public:
     heap() noexcept = default;
     
-    heap(std::initializer_list<Type> array) : Vector(array)
+    heap(const std::initializer_list<Type>& array) : Vector(array)
     {
         heapify();
     }
