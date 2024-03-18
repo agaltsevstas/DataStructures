@@ -44,7 +44,7 @@ namespace STD
     template <class TClass, typename Deleter = Default_Deleter<TClass>>
     class Unique_Ptr
     {
-        using element_type = std::remove_extent_t<TClass>; // C++17: Для подддержки использования типа TClass[] - Unique_Ptr<int[]> mass_deleter2(new int[10]);
+        using element_type = std::remove_extent_t<TClass>; // C++17: Для подддержки использования типа TClass[] - Unique_Ptr<int[]> mass(new int[10]);
         
         /// Конструктор копирования
         explicit Unique_Ptr(const Unique_Ptr& other) noexcept = delete;
