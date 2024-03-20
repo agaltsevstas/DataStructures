@@ -36,9 +36,11 @@ private:
     std::string _str;
 };
 
-
+#include <list>
 int main()
 {
+    std::list<int> l;
+    l.erase(l.begin());
     List<int> list;
     try
     {

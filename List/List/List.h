@@ -12,7 +12,9 @@ template <class T>
 class List
 {
     class Iterator;
-    friend Iterator;
+    friend class Iterator;
+    using Const_Iterator = const Iterator;
+    
     struct Node
     {
         Node() = default;
@@ -64,16 +66,22 @@ public:
     void Push_Back(T&& value);
     void Pop_Front();
     void Pop_Back();
-    T& Back();
     T& Front();
+    T& Back();
+    const T& Front() const;
+    const T& Back() const;
     void Swap(List& other) noexcept;
     bool Empty() const noexcept;
     size_t Size() const noexcept;
     void Reverse() noexcept;
     void Clear() noexcept;
     
-    Iterator Begin() const noexcept;
-    Iterator End() const noexcept;
+    Iterator Begin() noexcept;
+    Iterator End() noexcept;
+    Const_Iterator Begin() const noexcept;
+    Const_Iterator End() const noexcept;
+    Const_Iterator CBegin() const noexcept;
+    Const_Iterator CEnd() const noexcept;
     Iterator Insert(const Iterator& it, const T& value);
     Iterator Erase(const Iterator& it);
     Iterator Erase(const Iterator& begin, const Iterator& end);
@@ -398,6 +406,22 @@ T& List<T>::Back()
 }
 
 template <class T>
+const T& List<T>::Front() const
+{
+    if (!_begin)
+        throw std::runtime_error("begin is null");
+    return _begin->value;
+}
+
+template <class T>
+const T& List<T>::Back() const
+{
+    if (!_end)
+        throw std::runtime_error("end is null");
+    return _end->value;
+}
+
+template <class T>
 void List<T>::Swap(List& other) noexcept
 {
     if (this == &other) // object.Swap(object)
@@ -449,15 +473,39 @@ void List<T>::Clear() noexcept
 }
 
 template <class T>
-List<T>::Iterator List<T>::Begin() const noexcept
+List<T>::Iterator List<T>::Begin() noexcept
 {
     return Iterator(*this, _begin);
 };
 
 template <class T>
-List<T>::Iterator List<T>::End() const noexcept
+List<T>::Iterator List<T>::End() noexcept
 {
     return _end ? Iterator(*this, _end->next) : Iterator(*this, nullptr); // return nullptr!!!
+};
+
+template <class T>
+List<T>::Const_Iterator List<T>::Begin() const noexcept
+{
+    return Iterator(*this, _begin);
+};
+
+template <class T>
+List<T>::Const_Iterator List<T>::End() const noexcept
+{
+    return _end ? Iterator(*this, _end->next) : Iterator(*this, nullptr); // return nullptr!!!
+};
+
+template <class T>
+List<T>::Const_Iterator List<T>::CBegin() const noexcept
+{
+    return CBegin();
+};
+
+template <class T>
+List<T>::Const_Iterator List<T>::CEnd() const noexcept
+{
+    return CEnd();
 };
 
 template <class T>

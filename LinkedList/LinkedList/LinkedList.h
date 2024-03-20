@@ -14,6 +14,7 @@ class LinkedList
 {
     class Iterator;
     friend class Iterator;
+    using Const_Iterator = const Iterator;
     struct Node
     {
         Node() = default;
@@ -57,14 +58,19 @@ public:
     void Push_Front(T&& value);
     void Pop_Front();
     T& Front();
+    const T& Front() const;
     void Swap(LinkedList& other) noexcept;
     bool Empty() const noexcept;
     size_t Size() const noexcept;
     void Reverse() noexcept;
     void Clear() noexcept;
     
-    Iterator Begin() const noexcept;
-    Iterator End() const noexcept;
+    Iterator Begin() noexcept;
+    Iterator End() noexcept;
+    Const_Iterator Begin() const noexcept;
+    Const_Iterator End() const noexcept;
+    Const_Iterator CBegin() const noexcept;
+    Const_Iterator CEnd() const noexcept;
     Iterator Insert_After(const Iterator& it, const T& value);
     Iterator Erase_After(const Iterator& it);
     
@@ -278,6 +284,14 @@ T& LinkedList<T>::Front()
 }
 
 template <class T>
+const T& LinkedList<T>::Front() const
+{
+    if (!_node)
+        throw std::runtime_error("LinkedList is null");
+    return _node->value;
+}
+
+template <class T>
 void LinkedList<T>::Swap(LinkedList& other) noexcept
 {
     if (this == &other) // object.Swap(object)
@@ -330,16 +344,40 @@ void LinkedList<T>::Clear() noexcept
 }
 
 template <class T>
-LinkedList<T>::Iterator LinkedList<T>::Begin() const noexcept
+LinkedList<T>::Iterator LinkedList<T>::Begin() noexcept
 {
     return Iterator(*this, _node);
 };
 
 template <class T>
-LinkedList<T>::Iterator LinkedList<T>::End() const noexcept
+LinkedList<T>::Iterator LinkedList<T>::End() noexcept
 {
     return Iterator(*this, nullptr); // return nullptr!!!
 };
+
+template <class T>
+LinkedList<T>::Const_Iterator LinkedList<T>::Begin() const noexcept
+{
+    return Iterator(*this, _node);
+}
+
+template <class T>
+LinkedList<T>::Const_Iterator LinkedList<T>::End() const noexcept
+{
+    return Iterator(*this, nullptr); // return nullptr!!!
+}
+
+template <class T>
+LinkedList<T>::Const_Iterator LinkedList<T>::CBegin() const noexcept
+{
+    return Iterator(*this, _node);
+}
+
+template <class T>
+LinkedList<T>::Const_Iterator LinkedList<T>::CEnd() const noexcept
+{
+    return Iterator(*this, nullptr); // return nullptr!!!
+}
 
 template <class T>
 LinkedList<T>::Iterator LinkedList<T>::Insert_After(const Iterator& it, const T& value)
