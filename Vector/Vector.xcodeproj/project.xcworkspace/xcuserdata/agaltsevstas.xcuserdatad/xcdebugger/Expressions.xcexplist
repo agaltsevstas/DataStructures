@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "Vector&lt;bool&gt;::operator[](unsigned long):VectorBool.h">
+      </ContextState>
+      <ContextState
+         contextName = "Vector&lt;int&gt;::Reserve(unsigned long):Vector.h">
+      </ContextState>
+      <ContextState
+         contextName = "Vector&lt;Example&gt;::~Vector():Vector.h">
+      </ContextState>
+      <ContextState
+         contextName = "decltype(auto) Vector&lt;int&gt;::Emplace_Back&lt;int&gt;(int&amp;&amp;):Vector.h">
+      </ContextState>
+      <ContextState
+         contextName = "Vector&lt;bool&gt;::Vector(unsigned long, bool const&amp;):VectorBool.h">
+      </ContextState>
+      <ContextState
+         contextName = "main:main.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "vector">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "Vector_Base&lt;Example&gt;::~Vector_Base():Vector.h">
+      </ContextState>
+      <ContextState
+         contextName = "Vector&lt;Example&gt;::Destroy():Vector.h">
+      </ContextState>
+      <ContextState
+         contextName = "void Constructor&lt;int, int&gt;(int*, int&amp;&amp;):Vector.h">
+      </ContextState>
+      <ContextState
+         contextName = "decltype(auto) Vector&lt;int&gt;::Emplace_Back&lt;int const&amp;&gt;(int const&amp;):Vector.h">
+      </ContextState>
+      <ContextState
+         contextName = "void Constructor&lt;int, int const&amp;&gt;(int*, int const&amp;):Vector.h">
+      </ContextState>
+      <ContextState
+         contextName = "void Constructor&lt;int&gt;(int*, int&amp;&amp;):Vector.h">
+      </ContextState>
+      <ContextState
+         contextName = "Vector&lt;int&gt;::Begin():Vector.h">
+      </ContextState>
+      <ContextState
+         contextName = "int* Vector&lt;int&gt;::Emplace&lt;int const&amp;&gt;(int const*, int const&amp;):Vector.h">
+         <PersistentStrings>
+            <PersistentString
+               value = "tmp">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "Vector_Base&lt;int&gt;::Swap(Vector_Base&lt;int&gt;&amp;):Vector.h">
+      </ContextState>
+      <ContextState
+         contextName = "Vector_Base&lt;int&gt;::~Vector_Base():Vector.h">
+      </ContextState>
+      <ContextState
+         contextName = "Vector&lt;bool&gt;::BitRefernece::operator=(bool):VectorBool.h">
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

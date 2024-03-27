@@ -82,7 +82,7 @@ class Array
 public:
     Array() = default;
     ~Array() = default;
-    constexpr Array(const std::initializer_list<T>& Array);
+    constexpr Array(const std::initializer_list<T>& array);
     constexpr Array(const Array& other) noexcept;
     constexpr Array(Array&& other) noexcept;
     constexpr Array& operator=(const Array& other) noexcept;
@@ -117,7 +117,7 @@ public:
     const_reverse_iterator CRBegin() const noexcept;
     const_reverse_iterator CREnd() const noexcept;
 private:
-    T _data[N];
+    value_type _data[N];
 };
 
 template <class T, size_t N>
@@ -299,13 +299,13 @@ Array<T, N>::iterator Array<T, N>::End() noexcept
 template <class T, size_t N>
 Array<T, N>::const_iterator Array<T, N>::Begin() const noexcept
 {
-    return iterator(Data());
+    return const_iterator(Data());
 };
 
 template <class T, size_t N>
 Array<T, N>::const_iterator Array<T, N>::End() const noexcept
 {
-    return iterator(Data() + N);
+    return const_iterator(Data() + N);
 };
 
 template <class T, size_t N>
