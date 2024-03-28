@@ -126,7 +126,6 @@ public:
     Iterator(const List& list, Node* node) noexcept :
         _list(list)
     {
-
         _node = node;
     }
 

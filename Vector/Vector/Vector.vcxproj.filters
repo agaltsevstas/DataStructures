@@ -29,7 +29,10 @@
     <ClInclude Include="VectorBool.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Custrom_Vector\Custrom_Vector\Custom_Vector.h">
+    <ClInclude Include="Allocator.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Custom_Vector\Custom_Vector\Custom_Vector.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>

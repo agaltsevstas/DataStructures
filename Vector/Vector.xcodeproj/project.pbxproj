@@ -28,7 +28,8 @@
 		8051E7E22BAC2A29002F45C5 /* Vector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Vector.h; sourceTree = "<group>"; };
 		8051E81D2BAC99DD002F45C5 /* ReverseVector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReverseVector.h; sourceTree = "<group>"; };
 		8051E8322BB2B42A002F45C5 /* VectorBool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VectorBool.h; sourceTree = "<group>"; };
-		8051E8352BB40478002F45C5 /* Custom_Vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Custom_Vector.h; path = ../../Custrom_Vector/Custrom_Vector/Custom_Vector.h; sourceTree = "<group>"; };
+		8051E88B2BB54D1B002F45C5 /* Custom_Vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Custom_Vector.h; path = ../../Custom_Vector/Custom_Vector/Custom_Vector.h; sourceTree = "<group>"; };
+		8051E88C2BB55167002F45C5 /* Allocator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Allocator.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,8 +65,9 @@
 				8051E7DB2BAC2A16002F45C5 /* main.cpp */,
 				8051E7E22BAC2A29002F45C5 /* Vector.h */,
 				8051E81D2BAC99DD002F45C5 /* ReverseVector.h */,
+				8051E88C2BB55167002F45C5 /* Allocator.h */,
 				8051E8322BB2B42A002F45C5 /* VectorBool.h */,
-				8051E8352BB40478002F45C5 /* Custom_Vector.h */,
+				8051E88B2BB54D1B002F45C5 /* Custom_Vector.h */,
 			);
 			path = Vector;
 			sourceTree = "<group>";

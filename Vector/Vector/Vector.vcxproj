@@ -131,7 +131,8 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Custrom_Vector\Custrom_Vector\Custom_Vector.h" />
+    <ClInclude Include="..\..\Custom_Vector\Custom_Vector\Custom_Vector.h" />
+    <ClInclude Include="Allocator.h" />
     <ClInclude Include="ReverseVector.h" />
     <ClInclude Include="Vector.h" />
     <ClInclude Include="VectorBool.h" />

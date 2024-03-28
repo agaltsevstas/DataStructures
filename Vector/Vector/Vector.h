@@ -1,6 +1,7 @@
 #ifndef Vector_h
 #define Vector_h
 
+#include "Allocator.h"
 #include "ReverseVector.h"
 
 #include <algorithm>
@@ -14,21 +15,8 @@
         https://github.com/MaximShichanin/Vector/blob/master/vector.h
  */
 
-template <class T, typename ...Args>
-static void Constructor(T* ptr, Args&& ...args)
-{
-    // ptr[i] = T(std::forward<Args>(args)... // вызовет деструктор для созданного объекта ptr[i], но если будет сырая память то будет undefined behaiver
-    new (ptr) T(std::forward<Args>(args)...); // placement new: создаем объект в выделенной памяти
-}
-
-template <class T>
-static void Destructor(T* ptr)
-{
-    ptr->~T();
-}
-
 // Класс, который помогает вызывать деструкторы и освобождение памяти при выходе из зоны видимости или при расткрутке стека в try/catch
-template <class T>
+template <class T, typename Allocator = Allocator<T>>
 class Vector_Base
 {
     // Копирование не требуется, потому что там своя семантика
@@ -37,14 +25,17 @@ class Vector_Base
     
 public:
     Vector_Base() noexcept = default;
+    
     explicit Vector_Base(size_t capacity) :
-    _data(Allocate(capacity)),
+    _allocator(Allocator()),
+    _data(_allocator.Allocate(capacity)),
     _capacity(capacity)
     {
         
     }
     
     Vector_Base(Vector_Base&& other) noexcept :
+    _allocator(std::exchange(other._allocator, {})),
     _data(std::exchange(other._data, nullptr)), // move не работает с указателями
     _size(std::exchange(other._size, 0u)),
     _capacity(std::exchange(other._capacity, 0u))
@@ -55,8 +46,8 @@ public:
     ~Vector_Base()
     {
         while (_size-- > 0)
-            Destructor(_data + _size);
-        Deallocate(_data);
+            _allocator.Destructor(_data + _size);
+        _allocator.Deallocate(_data);
     }
     
     Vector_Base& operator=(Vector_Base&& other) noexcept
@@ -64,7 +55,9 @@ public:
         if (this == &other) // object = object
             return *this;
         
+        _allocator = std::exchange(other._allocator, {});
         _data = std::exchange(other._data, nullptr); // move не работает с указателями
+        _size = std::exchange(other._size, 0u);
         _capacity = std::exchange(other._capacity, 0u);
         
         return *this;
@@ -98,30 +91,14 @@ public:
     
     void Swap(Vector_Base &other) noexcept
     {
+        std::swap(_allocator, other._allocator);
         std::swap(_data, other._data);
         std::swap(_size, other._size);
         std::swap(_capacity, other._capacity);
     }
     
-public:
-    // Выделение сырой памяти без вызовов конструкторов
-    static T* Allocate(size_t capacity)
-    {
-        return capacity > 0 ? static_cast<T*>(operator new(capacity * sizeof(T))) : nullptr;
-    }
-
-    // Освобождение памяти без вызовов деструкторов
-    static void Deallocate(T* ptr)
-    {
-        // delete[] ptr // Вызовет деструкторы по всем элементам и потом удалит
-        if (ptr)
-        {
-            operator delete(ptr);
-            ptr = nullptr;
-        }
-    }
-    
 protected:
+    Allocator _allocator;
     T* _data = nullptr;
     size_t _size = 0u;
     size_t _capacity = 0u;
@@ -132,10 +109,10 @@ template <class T>
 class Vector : private Vector_Base<T>
 {
     // Выносим на 2 стадию инстанцирования, чтобы можно было использовать protected члены без Vector_Base<T>
+    using Vector_Base<T>::_allocator;
     using Vector_Base<T>::_data;
     using Vector_Base<T>::_size;
     using Vector_Base<T>::_capacity;
-    using Vector_Base<T>::Deallocate;
     
     using size_type = size_t;
     using value_type = T;
@@ -214,7 +191,7 @@ void Vector<T>::Destroy()
     if (_data)
     {
         for (size_type i = 0; i < _size; ++i)
-            Destructor(_data + i);
+            _allocator.Destructor(_data + i);
         operator delete(_data);
         _data = nullptr;
         _size = 0u;
@@ -228,7 +205,7 @@ Vector_Base<T>(count)
 {
     for (size_type i = 0; i < count; ++i)
     {
-        Constructor(_data + _size, value);
+        _allocator.Constructor(_data + _size, value);
         ++_size;
     }
 }
@@ -239,7 +216,7 @@ Vector_Base<T>(vector.size())
 {
     for (const auto &elem : vector)
     {
-        Constructor(_data + _size, elem);
+        _allocator.Constructor(_data + _size, elem);
         ++_size;
     }
 }
@@ -250,7 +227,7 @@ Vector_Base<T>(other._capacity)
 {
     while (_size < other._size)
     {
-        Constructor(_data + _size, other._data[_size]);
+        _allocator.Constructor(_data + _size, other._data[_size]);
         ++_size;
     }
 }
@@ -343,12 +320,12 @@ decltype(auto) Vector<T>::Emplace_Back(Args&& ...args)
         Reserve(_capacity * 2 + 1); // +1 потому что может быть 0
         
         // _data[_size] = T(std::forward<Args>(args)...); // вызовет деструктор для созданного объекта _data[_size], но если будет сырая память то будет undefined behaiver
-        Constructor(_data + _size, std::forward<Args>(args)...); // Добавляем новый элемент в конец
+        _allocator.Constructor(_data + _size, std::forward<Args>(args)...); // Добавляем новый элемент в конец
     }
     else
     {
         // _data[_size] = T(std::forward<Args>(args)...); // вызовет деструктор для созданного объекта _data[_size], но если будет сырая память то будет undefined behaiver
-        Constructor(_data + _size, std::forward<Args>(args)...);
+        _allocator.Constructor(_data + _size, std::forward<Args>(args)...); // Добавляем новый элемент в конец
     }
     
     ++_size;
@@ -413,9 +390,7 @@ void Vector<T>::Swap(Vector& other) noexcept
     if (this == &other) // object.Swap(object)
         return;
     
-    std::swap(_data, other._data);
-    std::swap(_capacity, other._capacity);
-    std::swap(_size, other._size);
+    Vector_Base<T>::Swap(other);
 }
 
 template <class T>
@@ -499,12 +474,12 @@ void Vector<T>::Reserve(size_type capacity)
             if constexpr (std::is_nothrow_move_constructible_v<T> && std::is_nothrow_move_assignable_v<T>)
             {
                 // tmp[i] = std::move(_data[i]); // вызовет деструктор для созданного объекта tmp[i], но если будет сырая память то будет undefined behaiver
-                Constructor(tmp + tmp_size, std::move(_data[tmp_size]));
+                _allocator.Constructor(tmp + tmp_size, std::move(_data[tmp_size]));
             }
             else
             {
                 // tmp[i] = _data[i]; // вызовет деструктор для созданного объекта tmp[i], но если будет сырая память то будет undefined behaiver
-                Constructor(tmp + tmp_size, _data[tmp_size]);
+                _allocator.Constructor(tmp + tmp_size, _data[tmp_size]);
             }
         }
         
@@ -545,12 +520,12 @@ void Vector<T>::Shrink_To_Fit() noexcept
                 if constexpr (std::is_nothrow_move_constructible_v<T> && std::is_nothrow_move_assignable_v<T>)
                 {
                     // tmp[i] = std::move(_data[i]); // вызовет деструктор для созданного объекта tmp[i], но если будет сырая память то будет undefined behaiver
-                    Constructor(tmp + tmp_size, std::move(_data[tmp_size]));
+                    _allocator.Constructor(tmp + tmp_size, std::move(_data[tmp_size]));
                 }
                 else
                 {
                     // tmp[i] = _data[i]; // вызовет деструктор для созданного объекта tmp[i], но если будет сырая память то будет undefined behaiver
-                    Constructor(tmp + tmp_size, _data[tmp_size]);
+                    _allocator.Constructor(tmp + tmp_size, _data[tmp_size]);
                 }
             }
             
@@ -649,12 +624,12 @@ Vector<T>::iterator Vector<T>::Emplace(Vector<T>::const_iterator it, Args&& ...a
                 if constexpr (std::is_nothrow_move_constructible_v<T> && std::is_nothrow_move_assignable_v<T>)
                 {
                     // tmp[i] = std::move(_data[i]); // вызовет деструктор для созданного объекта tmp[i], но если будет сырая память то будет undefined behaiver
-                    Constructor(tmp + tmp_size, std::move(_data[tmp_size]));
+                    _allocator.Constructor(tmp + tmp_size, std::move(_data[tmp_size]));
                 }
                 else
                 {
                     // tmp[i] = _data[i]; // вызовет деструктор для созданного объекта tmp[i], но если будет сырая память то будет undefined behaiver
-                    Constructor(tmp + tmp_size, _data[tmp_size]);
+                    _allocator.Constructor(tmp + tmp_size, _data[tmp_size]);
                 }
             }
             
@@ -665,12 +640,12 @@ Vector<T>::iterator Vector<T>::Emplace(Vector<T>::const_iterator it, Args&& ...a
                 if constexpr (std::is_nothrow_move_constructible_v<T> && std::is_nothrow_move_assignable_v<T>)
                 {
                     // tmp[i + 1] = std::move(_data[i]); // вызовет деструктор для созданного объекта tmp[i + 1], но если будет сырая память то будет undefined behaiver
-                    Constructor(tmp + tmp_size + 1, std::move(_data[tmp_size]));
+                    _allocator.Constructor(tmp + tmp_size + 1, std::move(_data[tmp_size]));
                 }
                 else
                 {
                     // tmp[i + 1] = _data[i]; // вызовет деструктор для созданного объекта tmp[i + 1], но если будет сырая память то будет undefined behaiver
-                    Constructor(tmp + tmp_size + 1, _data[tmp_size]);
+                    _allocator.Constructor(tmp + tmp_size + 1, _data[tmp_size]);
                 }
             }
             
@@ -682,7 +657,7 @@ Vector<T>::iterator Vector<T>::Emplace(Vector<T>::const_iterator it, Args&& ...a
     else
     {
         // память после последнего элемента - не инициализирована, поэтому инициализируем её размещающим new, остальные элементы переносим на один вправо
-        Constructor(End(), std::move(_data[_size - 1]));
+        _allocator.Constructor(End(), std::move(_data[_size - 1]));
         std::move_backward(Begin() + index, End() - 1, End());
         _data[index] = T(std::forward<Args>(args)...);
     }
@@ -705,7 +680,7 @@ Vector<T>::iterator Vector<T>::Erase(Vector<T>::const_iterator it)
     
     size_t index = static_cast<size_t>(it - Begin());
     std::move(Begin() + index + 1, End(), Begin() + index);
-    Destructor(End());
+    _allocator.Destructor(End());
     --_size;
     if (_size == 0)
     {
