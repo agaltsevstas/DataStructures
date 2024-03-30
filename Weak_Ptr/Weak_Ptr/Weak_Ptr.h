@@ -28,9 +28,9 @@ namespace STD
         /// Конструктор по-умолчанию
         Weak_Ptr() noexcept;
         /// Конструктор для Shared_Ptr
-        Weak_Ptr(const Shared_Ptr<TClass>& shared_ptr) noexcept;
+        Weak_Ptr(const Shared_Ptr<TClass>& shared_ptr);
         /// Конструктор копирования
-        Weak_Ptr(const Weak_Ptr& other) noexcept;
+        Weak_Ptr(const Weak_Ptr& other);
         /// Конструктор перемещеиня
         Weak_Ptr(Weak_Ptr&& other) noexcept;
         /// Деструктор
@@ -40,7 +40,7 @@ namespace STD
         /// Оператор копирования
         Weak_Ptr& operator=(const Weak_Ptr& other);
         /// Оператор перемещения
-        Weak_Ptr& operator=(Weak_Ptr&& other);
+        Weak_Ptr& operator=(Weak_Ptr&& other) noexcept;
         //auto operator<=>(const Weak_Ptr&) const = default; // сравнение по-умолчанию
         bool operator==(const Weak_Ptr& other); // Особый случай
         void Swap(Weak_Ptr& other);
@@ -70,7 +70,7 @@ namespace STD
 
     /// Конструктор для Shared_Ptr
     template <class TClass>
-    Weak_Ptr<TClass>::Weak_Ptr(const Shared_Ptr<TClass>& shared_ptr) noexcept :
+    Weak_Ptr<TClass>::Weak_Ptr(const Shared_Ptr<TClass>& shared_ptr) :
     _ptr(shared_ptr.ptr),
     _controlBlock(shared_ptr._controlBlock)
     {
@@ -81,7 +81,7 @@ namespace STD
 
     /// Конструктор копирования
     template <class TClass>
-    Weak_Ptr<TClass>::Weak_Ptr(const Weak_Ptr& other) noexcept
+    Weak_Ptr<TClass>::Weak_Ptr(const Weak_Ptr& other)
     {
         std::cout << "Сopy constructor: ";
         *this = other;
@@ -182,7 +182,7 @@ namespace STD
 
     /// Оператор перемещения
     template <class TClass>
-    Weak_Ptr<TClass>& Weak_Ptr<TClass>::operator=(Weak_Ptr&& other)
+    Weak_Ptr<TClass>& Weak_Ptr<TClass>::operator=(Weak_Ptr&& other) noexcept
     {
         if (this == &other) // object = std::move(object)
             return *this;

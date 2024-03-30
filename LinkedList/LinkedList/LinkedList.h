@@ -46,10 +46,10 @@ public:
     LinkedList() = default;
     LinkedList(const std::initializer_list<T>& list);
     LinkedList(const Iterator& begin, const Iterator& end);
-    LinkedList(const LinkedList& other) noexcept;
+    LinkedList(const LinkedList& other);
     LinkedList(LinkedList&& other) noexcept;
     ~LinkedList();
-    LinkedList& operator=(const LinkedList& other) noexcept;
+    LinkedList& operator=(const LinkedList& other);
     LinkedList& operator=(LinkedList&& other) noexcept;
     bool operator==(const LinkedList& other);
     template <typename ...Args>
@@ -180,7 +180,7 @@ LinkedList<T>::LinkedList(const LinkedList<T>::Iterator& begin, const LinkedList
 }
 
 template <class T>
-LinkedList<T>::LinkedList(const LinkedList& other) noexcept
+LinkedList<T>::LinkedList(const LinkedList& other)
 {
     Copy(other);
 }
@@ -199,7 +199,7 @@ LinkedList<T>::~LinkedList()
 }
 
 template <class T>
-LinkedList<T>& LinkedList<T>::operator=(const LinkedList& other) noexcept
+LinkedList<T>& LinkedList<T>::operator=(const LinkedList& other)
 {
     if (this == &other) // object = object
         return *this;
@@ -225,6 +225,9 @@ LinkedList<T>& LinkedList<T>::operator=(LinkedList&& other) noexcept
 template <class T>
 bool LinkedList<T>::operator==(const LinkedList& other)
 {
+    if (this == &other) // object = object
+        return true;
+    
     if (Size() != other.Size())
         return false;
     

@@ -124,14 +124,17 @@ class Vector : private Vector_Base<T>
     using reverse_iterator = ReverseIterator<T>;
     using const_reverse_iterator = ReverseIterator<T>;
     
+    // В качестве примера можно создать аллокатор на другой тип
+    using custom_allocator = Allocator<T>::template Rebind<size_type>::other;
+    
 public:
     Vector() = default;
     ~Vector() = default;
-    explicit Vector(size_type count, const value_type& value = value_type()) noexcept;
+    explicit Vector(size_type count, const value_type& value = value_type()) noexcept; // Вызовется на +1 больше конструктор по умолчанию!!! Обычно это выносится в отдельный конструктор
     Vector(const std::initializer_list<T>& vector) noexcept;
-    Vector(const Vector& other) noexcept;
+    Vector(const Vector& other);
     Vector(Vector&& other) noexcept;
-    Vector& operator=(const Vector& other) noexcept;
+    Vector& operator=(const Vector& other);
     Vector& operator=(Vector&& other) noexcept;
     bool operator==(const Vector& other) const;
     bool operator!=(const Vector& other) const;
@@ -143,8 +146,8 @@ public:
     template <typename ...Args>
     decltype(auto) Emplace_Back(Args&& ...args);
     void Pop_Back();
-    reference At(size_t index);
-    const_reference At(size_t index) const;
+    reference At(size_type index);
+    const_reference At(size_type index) const;
     reference Front();
     const_reference Front() const;
     reference Back();
@@ -222,7 +225,7 @@ Vector_Base<T>(vector.size())
 }
 
 template <class T>
-Vector<T>::Vector(const Vector& other) noexcept :
+Vector<T>::Vector(const Vector& other) :
 Vector_Base<T>(other._capacity)
 {
     while (_size < other._size)
@@ -241,7 +244,7 @@ Vector_Base<T>(std::move(other))
 }
 
 template <class T>
-Vector<T>& Vector<T>::operator=(const Vector& other) noexcept
+Vector<T>& Vector<T>::operator=(const Vector& other)
 {
     if (this == &other) // object = object
         return *this;
@@ -268,6 +271,9 @@ Vector<T>& Vector<T>::operator=(Vector&& other) noexcept
 template <class T>
 bool Vector<T>::operator==(const Vector& other) const
 {
+    if (this == &other) // object = object
+        return true;
+    
     if (Size() != other.Size())
         return false;
     
@@ -343,7 +349,7 @@ void Vector<T>::Pop_Back()
 }
 
 template <class T>
-Vector<T>::reference Vector<T>::At(size_t index)
+Vector<T>::reference Vector<T>::At(size_type index)
 {
     if (index >= _size)
         throw std::out_of_range("Index is out of range!");
@@ -352,7 +358,7 @@ Vector<T>::reference Vector<T>::At(size_t index)
 }
 
 template <class T>
-Vector<T>::const_reference Vector<T>::At(size_t index) const
+Vector<T>::const_reference Vector<T>::At(size_type index) const
 {
     if (index >= _size)
         throw std::out_of_range("Index is out of range!");

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "main:main.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "Unordered_Map&lt;int, std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt;&gt;, std::__1::hash&lt;int&gt;, std::__1::equal_to&lt;int&gt;&gt;::Insert(std::__1::pair&lt;int const, std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt;&gt;&gt;):Unordered_Map.h">
+         <PersistentStrings>
+            <PersistentString
+               value = "bucket">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

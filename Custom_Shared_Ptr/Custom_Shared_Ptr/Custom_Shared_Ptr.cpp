@@ -48,7 +48,7 @@ namespace STD
         template <typename Deleter = Default_Deleter<element_type>>
         explicit Custom_Shared_Ptr(element_type* iObject, Deleter deleter = Deleter()) noexcept;
         /// Конструктор копирования
-        Custom_Shared_Ptr(const Custom_Shared_Ptr& other) noexcept;
+        Custom_Shared_Ptr(const Custom_Shared_Ptr& other);
         /// Конструктор перемещеиня
         Custom_Shared_Ptr(Custom_Shared_Ptr&& other) noexcept;
         /// Деструктор
@@ -56,7 +56,7 @@ namespace STD
         /// Оператор копирования
         Custom_Shared_Ptr& operator=(const Custom_Shared_Ptr& other);
         /// Оператор перемещения
-        Custom_Shared_Ptr& operator=(Custom_Shared_Ptr&& other);
+        Custom_Shared_Ptr& operator=(Custom_Shared_Ptr&& other) noexcept;
         Custom_Shared_Ptr& operator=(decltype(nullptr));
         auto operator<=>(const Custom_Shared_Ptr&) const = default; // сравнение по-умолчанию
         bool operator==(const Custom_Shared_Ptr& other); // Особый случай
@@ -110,7 +110,7 @@ namespace STD
 
     /// Конструктор копирования
     template <class TClass>
-    Custom_Shared_Ptr<TClass>::Custom_Shared_Ptr(const Custom_Shared_Ptr& other) noexcept
+    Custom_Shared_Ptr<TClass>::Custom_Shared_Ptr(const Custom_Shared_Ptr& other)
     {
         std::cout << "Сopy constructor: ";
         *this = other;
@@ -182,7 +182,7 @@ namespace STD
 
     /// Оператор перемещения
     template <class TClass>
-    Custom_Shared_Ptr<TClass>& Custom_Shared_Ptr<TClass>::operator=(Custom_Shared_Ptr&& other)
+    Custom_Shared_Ptr<TClass>& Custom_Shared_Ptr<TClass>::operator=(Custom_Shared_Ptr&& other) noexcept
     {
         if (this == &other) // object = std::move(object)
             return *this;

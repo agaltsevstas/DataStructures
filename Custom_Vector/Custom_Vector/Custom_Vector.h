@@ -31,11 +31,11 @@ class Custom_Vector
 public:
     Custom_Vector() = default;
     ~Custom_Vector() = default;
-    explicit Custom_Vector(size_type size, const value_type& value = value_type());
+    explicit Custom_Vector(size_type size, const value_type& value = value_type()); // Вызовется на +1 больше конструктор по умолчанию!!! Обычно это выносится в отдельный конструктор
     Custom_Vector(const std::initializer_list<T>& vector);
     Custom_Vector(const Custom_Vector& other);
     Custom_Vector(Custom_Vector&& other) noexcept;
-    Custom_Vector& operator=(const Custom_Vector& other) noexcept;
+    Custom_Vector& operator=(const Custom_Vector& other);
     Custom_Vector& operator=(Custom_Vector&& other) noexcept;
     bool operator==(const Custom_Vector& other) const;
     bool operator!=(const Custom_Vector& other) const;
@@ -47,8 +47,8 @@ public:
     template <typename ...Args>
     decltype(auto) Emplace_Back(Args&& ...args);
     void Pop_Back();
-    reference At(size_t index);
-    const_reference At(size_t index) const;
+    reference At(size_type index);
+    const_reference At(size_type index) const;
     reference Front();
     const_reference Front() const;
     reference Back();
@@ -195,7 +195,7 @@ _capacity(std::exchange(other._capacity, 0u))
 }
 
 template <class T>
-Custom_Vector<T>& Custom_Vector<T>::operator=(const Custom_Vector& other) noexcept
+Custom_Vector<T>& Custom_Vector<T>::operator=(const Custom_Vector& other)
 {
     if (this == &other) // object = object
         return *this;
@@ -222,6 +222,9 @@ Custom_Vector<T>& Custom_Vector<T>::operator=(Custom_Vector&& other) noexcept
 template <class T>
 bool Custom_Vector<T>::operator==(const Custom_Vector& other) const
 {
+    if (this == &other) // object = object
+        return true;
+    
     if (Size() != other.Size())
         return false;
     
@@ -330,7 +333,7 @@ void Custom_Vector<T>::Pop_Back()
 }
 
 template <class T>
-Custom_Vector<T>::reference Custom_Vector<T>::At(size_t index)
+Custom_Vector<T>::reference Custom_Vector<T>::At(size_type index)
 {
     if (index >= _size)
         throw std::out_of_range("Index is out of range!");
@@ -339,7 +342,7 @@ Custom_Vector<T>::reference Custom_Vector<T>::At(size_t index)
 }
 
 template <class T>
-Custom_Vector<T>::const_reference Custom_Vector<T>::At(size_t index) const
+Custom_Vector<T>::const_reference Custom_Vector<T>::At(size_type index) const
 {
     if (index >= _size)
         throw std::out_of_range("Index is out of range!");

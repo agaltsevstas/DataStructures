@@ -133,7 +133,6 @@ int main()
         vector4.Swap(vector5);
         Custom_Vector<int> vector6 = {1, 2, 3};
         auto vector7 = vector6;
-        vector6 == vector7;
         [[maybe_unused]] auto compare3 = (vector6 == vector7);
         [[maybe_unused]] auto compare4 = (vector6 != vector7);
         vector6.At(1) = 5;

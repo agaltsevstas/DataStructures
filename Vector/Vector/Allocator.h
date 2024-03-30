@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+// Свой аллокатор вместо вызова напрямую new
 template <typename T>
 struct Allocator
 {
@@ -10,7 +11,7 @@ struct Allocator
     using size_type = std::size_t;
 
     // Выделение сырой памяти без вызовов конструкторов
-    T* Allocate(size_t capacity);
+    T* Allocate(size_type capacity);
     // Освобождение памяти без вызовов деструкторов
     void Deallocate(T* ptr);
     // Вызов конструктора
@@ -18,11 +19,17 @@ struct Allocator
     void Constructor(T* ptr, Args&& ...args);
     // Вызов деструктора
     void Destructor(T* ptr);
+    // Позволяет создавать аллокатор для другого типа
+    template <typename U>
+    struct Rebind
+    {
+        using other = Allocator<U>;
+    };
 };
 
 // Выделение сырой памяти без вызовов конструкторов
 template <typename T>
-T* Allocator<T>::Allocate(size_t capacity)
+T* Allocator<T>::Allocate(size_type capacity)
 {
     return capacity > 0 ? static_cast<T*>(operator new(capacity * sizeof(T))) : nullptr;
 }

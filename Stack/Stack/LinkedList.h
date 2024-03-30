@@ -35,10 +35,10 @@ namespace linked_list
         
     public:
         Stack() = default;
-        Stack(const Stack& other) noexcept;
+        Stack(const Stack& other);
         Stack(Stack&& other) noexcept;
         ~Stack();
-        Stack& operator=(const Stack& other) noexcept;
+        Stack& operator=(const Stack& other);
         Stack& operator=(Stack&& other) noexcept;
         template <typename ...Args>
         // Помещает новый элемент на вершину стека. Элемент создается на месте, т.е. операции копирования или перемещения не выполняются. Конструктор элемента вызывается с теми же аргументами, что и функция.
@@ -84,7 +84,7 @@ namespace linked_list
     };
 
     template <class T>
-    Stack<T>::Stack(const Stack& other) noexcept
+    Stack<T>::Stack(const Stack& other)
     {
         Copy(other);
     }
@@ -104,7 +104,7 @@ namespace linked_list
     }
 
     template <class T>
-    Stack<T>& Stack<T>::operator=(const Stack& other) noexcept
+    Stack<T>& Stack<T>::operator=(const Stack& other)
     {
         if (this == &other) // object = object
             return *this;

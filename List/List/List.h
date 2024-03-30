@@ -50,10 +50,10 @@ public:
     List() = default;
     List(const std::initializer_list<T>& list);
     List(const Iterator& begin, const Iterator& end);
-    List(const List& other) noexcept;
+    List(const List& other);
     List(List&& other) noexcept;
     ~List();
-    List& operator=(const List& other) noexcept;
+    List& operator=(const List& other);
     List& operator=(List&& other) noexcept;
     bool operator==(const List& other);
     template <typename ...Args>
@@ -207,7 +207,7 @@ List<T>::List(const List<T>::Iterator& begin, const List<T>::Iterator& end)
 }
 
 template <class T>
-List<T>::List(const List& other) noexcept
+List<T>::List(const List& other)
 {
     Copy(other);
 }
@@ -227,7 +227,7 @@ List<T>::~List()
 }
 
 template <class T>
-List<T>& List<T>::operator=(const List& other) noexcept
+List<T>& List<T>::operator=(const List& other)
 {
     if (this == &other) // object = object
         return *this;
@@ -254,6 +254,9 @@ List<T>& List<T>::operator=(List&& other) noexcept
 template <class T>
 bool List<T>::operator==(const List& other)
 {
+    if (this == &other) // object = object
+        return true;
+    
     if (Size() != other.Size())
         return false;
     
@@ -586,9 +589,10 @@ List<T>::Iterator List<T>::Erase(const Iterator& it)
 template <class T>
 List<T>::Iterator List<T>::Erase(const Iterator& begin, const Iterator& end)
 {
-    for (auto it = begin; it != end;)
+    auto it = begin;
+    while (it != end)
         it = Erase(it);
-    return end;
+    return it;
 }
 
 template <class U>

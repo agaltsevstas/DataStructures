@@ -60,7 +60,7 @@ namespace STD
         /// Деструктор
         ~Unique_Ptr() noexcept;
         /// Оператор перемещения
-        Unique_Ptr& operator=(Unique_Ptr&& other);
+        Unique_Ptr& operator=(Unique_Ptr&& other) noexcept;
         Unique_Ptr& operator=(decltype(nullptr));
         auto operator<=>(const Unique_Ptr&) const = default; // сравнение по-умолчанию
         bool operator==(Unique_Ptr&& other); // Особый случай
@@ -124,7 +124,7 @@ namespace STD
 
     /// Оператор перемещения
     template <class TClass, typename Deleter>
-    Unique_Ptr<TClass, Deleter>& Unique_Ptr<TClass, Deleter>::operator=(Unique_Ptr&& other)
+    Unique_Ptr<TClass, Deleter>& Unique_Ptr<TClass, Deleter>::operator=(Unique_Ptr&& other) noexcept
     {
         if (this == &other) // object = std::move(object)
             return *this;

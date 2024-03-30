@@ -83,9 +83,9 @@ public:
     Array() = default;
     ~Array() = default;
     constexpr Array(const std::initializer_list<T>& array);
-    constexpr Array(const Array& other) noexcept;
+    constexpr Array(const Array& other);
     constexpr Array(Array&& other) noexcept;
-    constexpr Array& operator=(const Array& other) noexcept;
+    constexpr Array& operator=(const Array& other);
     constexpr Array& operator=(Array&& other) noexcept;
     constexpr bool operator==(const Array& other) const;
     constexpr bool operator!=(const Array& other) const;
@@ -131,7 +131,7 @@ constexpr Array<T, N>::Array(const std::initializer_list<T>& array)
 }
 
 template <class T, size_t N>
-constexpr Array<T, N>::Array(const Array& other) noexcept
+constexpr Array<T, N>::Array(const Array& other)
 {
     for (size_type i = 0; i < N; ++i)
         _data[i] = other._data[i];
@@ -145,7 +145,7 @@ constexpr Array<T, N>::Array(Array&& other) noexcept
 }
 
 template <class T, size_t N>
-constexpr Array<T, N>& Array<T, N>::operator=(const Array& other) noexcept
+constexpr Array<T, N>& Array<T, N>::operator=(const Array& other)
 {
     if (this == &other) // object = object
         return *this;
