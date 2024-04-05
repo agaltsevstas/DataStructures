@@ -8,19 +8,6 @@ namespace linked_list
     {
         struct Node
         {
-            Node() = default;
-            explicit Node(const T& iValue, Node* iPrev = nullptr) noexcept
-            {
-                value = iValue;
-                prev = iPrev;
-            }
-            
-            explicit Node(T&& iValue, Node* iPrev = nullptr) noexcept
-            {
-                value = std::move(iValue);
-                prev = iPrev;
-            }
-            
             template <typename ...Args>
             explicit Node(Node* iPrev, Args&& ...args) noexcept :
             prev(iPrev),
@@ -61,17 +48,17 @@ namespace linked_list
         
         void Copy(const Stack& other)
         {
-            Node* top_other = other._node;
+            Node* top_other = other._head;
             if (!top_other)
                 return;
             
-            Node* top = new Node(other._node->value, nullptr);
-            _node = top;
+            Node* top = new Node(nullptr, top_other->value);
+            _head = top;
             top_other = top_other->prev;
             
             while (top_other)
             {
-                top->prev = new Node(top_other->value, nullptr);
+                top->prev = new Node(nullptr, top_other->value);
                 top = top->prev;
                 top_other = top_other->prev;
             }
@@ -79,7 +66,7 @@ namespace linked_list
             _size = other._size;
         }
     private:
-        Node* _node = nullptr;
+        Node* _head = nullptr;
         size_t _size = 0;
     };
 
@@ -92,7 +79,7 @@ namespace linked_list
     template <class T>
     Stack<T>::Stack(Stack&& other) noexcept
     {
-        _node = std::exchange(other._node, nullptr);
+        _head = std::exchange(other._head, nullptr);
         _size = std::exchange(other._size, 0);
     }
 
@@ -121,7 +108,7 @@ namespace linked_list
         if (this == &other) // object = object
             return *this;
         
-        _node = std::exchange(other._node, nullptr);
+        _head = std::exchange(other._head, nullptr);
         _size = std::exchange(other._size, 0);
         
         return *this;
@@ -132,25 +119,25 @@ namespace linked_list
     template <typename ...Args>
     decltype(auto) Stack<T>::Emplace(Args&& ...args)
     {
-        Node* node = new Node(_node, std::forward<Args>(args)...);
-        _node = node;
+        Node* node = new Node(_head, std::forward<Args>(args)...);
+        _head = node;
         ++_size;
-        return _node->value;
+        return _head->value;
     }
 
     template <class T>
     void Stack<T>::Push(const T& value)
     {
-        Node* node = new Node(value, _node);
-        _node = node;
+        Node* node = new Node(_head, value);
+        _head = node;
         ++_size;
     }
 
     template <class T>
     void Stack<T>::Push(T&& value)
     {
-        Node* node = new Node(std::move(value), _node);
-        _node = node;
+        Node* node = new Node(_head, std::move(value));
+        _head = node;
         ++_size;
     }
 
@@ -160,7 +147,7 @@ namespace linked_list
         if (Empty())
             throw std::logic_error("Stack is empty");
         
-        return _node->value;
+        return _head->value;
     }
 
     template <class T>
@@ -169,15 +156,18 @@ namespace linked_list
         if (Empty())
             throw std::logic_error("Stack is empty");
         
-        return _node->value;
+        return _head->value;
     }
 
     template <class T>
     void Stack<T>::Pop()
     {
-        Node* top = _node->prev;
-        delete _node;
-        _node = top;
+        if (Empty())
+            throw std::logic_error("Stack is empty");
+        
+        Node* top = _head->prev;
+        delete _head;
+        _head = top;
         --_size;
     }
 
@@ -187,7 +177,7 @@ namespace linked_list
         if (this == &other) // object.Swap(object)
             return;
         
-        std::swap(_node, other._node);
+        std::swap(_head, other._head);
         std::swap(_size, other._size);
     }
 

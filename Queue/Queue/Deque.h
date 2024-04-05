@@ -3,27 +3,28 @@
 
 #include <deque>
 
+
 namespace DEQUE
 {
     template<typename T, class Container = std::deque<T>> // vector, list or deque
-    class Stack
+    class Queue
     {
 
     public:
-        Stack() = default;
-        ~Stack() = default;
+        Queue() = default;
+        ~Queue() = default;
         
-        Stack(const Stack& other)
+        Queue(const Queue& other) noexcept
         {
             *this = other;
         }
         
-        Stack(Stack&& other) noexcept
+        Queue(Queue&& other) noexcept
         {
             *this = std::move(other);
         }
         
-        Stack& operator=(const Stack& other)
+        Queue& operator=(const Queue& other) noexcept
         {
             if (this == &other)
                 return *this;
@@ -32,7 +33,7 @@ namespace DEQUE
             return *this;
         }
         
-        Stack& operator=(Stack&& other) noexcept
+        Queue& operator=(Queue&& other) noexcept
         {
             if (this == &other)
                 return *this;
@@ -53,22 +54,32 @@ namespace DEQUE
             _container.emplace_back(std::forward<U>(value));
         }
         
-        T& Top()
+        T& Front()
+        {
+            return _container.front();
+        }
+        
+        const T& Front() const
+        {
+            return _container.front();
+        }
+        
+        T& Back()
         {
             return _container.back();
         }
         
-        const T& Top() const
+        const T& Back() const
         {
             return _container.back();
         }
         
         void Pop()
         {
-            _container.pop_back();
+            _container.pop_front();
         }
         
-        void Swap(Stack& other) noexcept
+        void Swap(Queue& other) noexcept
         {
             if (this == &other)
                 return;
