@@ -109,19 +109,19 @@ class LinkedList<T>::Iterator
 {
     friend class LinkedList;
 public:
-    Iterator(const LinkedList& list, Node* node) noexcept :
+    Iterator(const LinkedList& list, Node* node) :
         _list(list)
     {
         _node = node;
     }
 
-    inline Iterator& operator++() noexcept
+    inline Iterator& operator++()
     {
         _node = _node ? _node->next : nullptr;
         return *this;
     }
 
-    inline Iterator operator++(int) noexcept
+    inline Iterator operator++(int)
     {
         Iterator temp = *this;
         ++(*this);
@@ -134,15 +134,29 @@ public:
             throw std::runtime_error("iterator is null");
         return _node->value;
     }
-
-    inline T& operator->() const noexcept
+    
+    inline const T& operator*() const
     {
         if (!_node)
             throw std::runtime_error("iterator is null");
         return _node->value;
     }
 
-    inline Iterator& operator=(const Iterator& other) noexcept
+    inline T* operator->()
+    {
+        if (!_node)
+            throw std::runtime_error("iterator is null");
+        return &_node->value;
+    }
+    
+    inline const T* operator->() const
+    {
+        if (!_node)
+            throw std::runtime_error("iterator is null");
+        return &_node->value;
+    }
+
+    inline Iterator& operator=(const Iterator& other)
     {
         if (&_list == &other._list)
             _node = other._node;

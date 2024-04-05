@@ -11,10 +11,19 @@
         https://github.com/carlaoutput/hashtable/blob/master/hashtable.hpp
  */
 
+template <typename T>
+struct Equal_To
+{
+    bool operator()(const T& lhs, const T& rhs)
+    {
+        return lhs == rhs;
+    }
+};
+
 template <class Key,
           class Value,
           class Hash = std::hash<Key>,
-          class Equal = std::equal_to<Key>>
+          class Equal = Equal_To<Key>>
 class Unordered_Map
 {
 public:
@@ -26,6 +35,7 @@ public:
 private:
     struct ListNode
     {
+    public:
         ListNode() = default;
         ~ListNode() = default;
         ListNode(const value_type& iData, size_type iBucket):
@@ -78,11 +88,13 @@ private:
         size_type bucket; // принадлежность к bucket
     };
     
-public:
     using list_type = std::list<ListNode>;
+    
+public:
     using const_value_type = const std::pair<const Key, Value>;
-    using iterator = list_type::iterator;
-    using const_iterator = const iterator;
+    class Iterator;
+    using iterator = Iterator;
+    using const_iterator = const Iterator;
     
 private:
     using buckets_t = std::vector<iterator>;
@@ -98,7 +110,9 @@ public:
     Unordered_Map& operator=(Unordered_Map&& other) noexcept;
     bool operator==(const Unordered_Map& other) const noexcept;
     bool operator!=(const Unordered_Map& other) const noexcept;
+    // Менее эффективно - создается значение по умолчанию, а потом происходит присвоение
     Value& operator[](const Key& key);
+    // Создает ключ со значением по умолчанию
     const Value& operator[](const Key& key) const;
     Value& At(const Key& key);
     const Value& At(const Key& key) const;
@@ -107,12 +121,16 @@ public:
     template <typename ...Args>
     std::pair<iterator, bool> Emplace(Args&& ...args);
     std::pair<iterator, bool> Insert(const_value_type& element);
+    // TODO: кладет рядом с итератором, если bucket не сильно отличаются, время стремится -> Time: O(1)
+    std::pair<iterator, bool> Insert(const_iterator it, const_value_type& element);
     // (Time: O(1))
     iterator Find(const Key& key) const noexcept;
     // (Time: O(1))
     size_type Count(const Key& key) const noexcept;
     // (Time: O(1))
     bool Contains(const Key& key) const noexcept;
+    // (Time: O(1))
+    iterator Erase(const Key& key);
     // (Time: O(1))
     iterator Erase(const_iterator it);
     // (Time: O(n))
@@ -151,6 +169,82 @@ private:
     list_type _list;
     float _max_factor = 1.0; // по-умолчанию
     size_type _size = 0;
+};
+
+// Декоратор, который разрешает обращаться к data, но запрещает обращение к bucket
+template <class Key,
+          class Value,
+          class Hash,
+          class Equal>
+class Unordered_Map<Key, Value, Hash, Equal>::Iterator
+{
+    friend class Unordered_Map;
+public:
+    Iterator() = default;
+    Iterator(const list_type::iterator it) :
+    _iterator(it)
+    {
+        
+    }
+    
+    inline value_type& operator*()
+    {
+        return _iterator->data;
+    }
+    
+    inline const value_type& operator*() const
+    {
+        return _iterator->data;
+    }
+
+    inline value_type* operator->()
+    {
+        return &_iterator->data;
+    }
+    
+    inline const value_type* operator->() const
+    {
+        return &_iterator->data;
+    }
+    
+    inline bool operator==(const Iterator& other) const
+    {
+        return _iterator == other._iterator;
+    }
+    
+    inline bool operator!=(const Iterator& other) const
+    {
+        return !(*this == other);
+    }
+    
+    inline Iterator& operator++()
+    {
+        ++_iterator;
+        return *this;
+    }
+
+    inline Iterator operator++(int)
+    {
+        Iterator temp = *this;
+        ++(*this);
+        return temp;
+    }
+
+    inline Iterator& operator--()
+    {
+        --_iterator;
+        return *this;
+    }
+
+    inline Iterator operator--(int)
+    {
+        Iterator temp = *this;
+        --(*this);
+        return temp;
+    }
+    
+private:
+    list_type::iterator _iterator;
 };
 
 
@@ -226,18 +320,20 @@ bool Unordered_Map<Key, Value, Hash, Equal>::operator!=(const Unordered_Map& oth
     return !(*this == other);
 }
 
+// Менее эффективно - создается значение по умолчанию, а потом происходит присвоение
 template <class Key, class Value, class Hash, class Equal>
 Value& Unordered_Map<Key, Value, Hash, Equal>::operator[](const Key& key)
 {
     auto [it, flag] = Emplace(std::move(std::make_pair(key, Value())));
-    return it->data.second;
+    return iterator(it)->second;
 }
 
+// Создает ключ со значением по умолчанию
 template <class Key, class Value, class Hash, class Equal>
 const Value& Unordered_Map<Key, Value, Hash, Equal>::operator[](const Key& key) const
 {
     auto [it, flag] = Emplace(std::move(std::make_pair(key, Value())));
-    return it->data.second;
+    return iterator(it)->second;
 }
 
 template <class Key, class Value, class Hash, class Equal>
@@ -247,7 +343,7 @@ Value& Unordered_Map<Key, Value, Hash, Equal>::At(const Key& key)
     if (it == iterator())
         throw std::runtime_error("Key is not exist!");
     
-    return it->data.second;
+    return iterator(it)->second;
 }
 
 template <class Key, class Value, class Hash, class Equal>
@@ -265,7 +361,7 @@ template <class Key, class Value, class Hash, class Equal>
 template <typename ...Args>
 std::pair<typename Unordered_Map<Key, Value, Hash, Equal>::iterator, bool> Unordered_Map<Key, Value, Hash, Equal>::Emplace(Args&& ...args)
 {
-    auto element = value_type(std::forward<Args>(args)...);
+    auto element = value_type(std::forward<Args>(args)...); // В случае exception элемент не добавится
     if (Load_Factor() >= Max_Load_Factor())
         Rehash(Buckets_Count() * 2 + 1);
     
@@ -275,14 +371,14 @@ std::pair<typename Unordered_Map<Key, Value, Hash, Equal>::iterator, bool> Unord
     
     if (it != iterator())
     {
-        while (it != _list.end() && it->bucket == bucket)
+        while (it != _list.end() && it._iterator->bucket == bucket)
         {
-            if (it->data.first == element.first)
+            if (it->first == element.first)
                 return {it, false};
             ++it;
         }
         
-        _list.emplace(it, std::move(element), bucket);
+        _list.emplace(it._iterator, std::move(element), bucket);
     }
     else
     {
@@ -301,6 +397,13 @@ std::pair<typename Unordered_Map<Key, Value, Hash, Equal>::iterator, bool> Unord
     return Emplace(std::move(element));
 }
 
+// TODO: кладет рядом с итератором, если bucket не сильно отличаются, время стремится -> Time: O(1)
+template <class Key, class Value, class Hash, class Equal>
+std::pair<typename Unordered_Map<Key, Value, Hash, Equal>::iterator, bool> Unordered_Map<Key, Value, Hash, Equal>::Insert(const_iterator it, const_value_type& element)
+{
+    
+}
+
 // (Time: O(1))
 template <class Key, class Value, class Hash, class Equal>
 Unordered_Map<Key, Value, Hash, Equal>::iterator Unordered_Map<Key, Value, Hash, Equal>::Find(const Key& key) const noexcept
@@ -310,11 +413,11 @@ Unordered_Map<Key, Value, Hash, Equal>::iterator Unordered_Map<Key, Value, Hash,
     {
         if (auto it = _buckets[bucket]; it != iterator())
         {
-            for (; it != _list.end() || it->bucket != bucket; ++it)
+            for (; it._iterator != _list.end() || it._iterator->bucket != bucket; ++it)
             {
-                if (Equal()(it->data.first, key))
+                if (Equal()(it->first, key))
                 {
-                    return it;
+                    return iterator(it);
                 }
             }
         }
@@ -339,17 +442,28 @@ bool Unordered_Map<Key, Value, Hash, Equal>::Contains(const Key& key) const noex
 
 // (Time: O(1))
 template <class Key, class Value, class Hash, class Equal>
+Unordered_Map<Key, Value, Hash, Equal>::iterator Unordered_Map<Key, Value, Hash, Equal>::Erase(const Key& key)
+{
+    iterator result = Find(key);
+    if (result == End())
+        return result;
+    
+    return Erase(result);
+}
+
+// (Time: O(1))
+template <class Key, class Value, class Hash, class Equal>
 Unordered_Map<Key, Value, Hash, Equal>::iterator Unordered_Map<Key, Value, Hash, Equal>::Erase(const_iterator it)
 {
     if (it != iterator())
     {
-        if (it == _buckets[it->bucket])
+        if (it == _buckets[it._iterator->bucket])
         {
-            return _buckets[it->bucket] = _list.erase(it);
+            return _buckets[it._iterator->bucket] = _list.erase(it._iterator);
         }
         else
         {
-            return _list.erase(it);
+            return _list.erase(it._iterator);
         }
     }
     
@@ -380,10 +494,10 @@ void Unordered_Map<Key, Value, Hash, Equal>::Rehash(size_type count)
         auto it = buckets[bucket];
         if (it != iterator())
         {
-            while (it != list.end() && it->bucket == bucket)
+            while (it != list.end() && it._iterator->bucket == bucket)
                 ++it;
             
-            list.emplace(it, std::move(iter->data), bucket);
+            list.emplace(it._iterator, std::move(iter->data), bucket);
         }
         else
         {
@@ -452,7 +566,7 @@ size_t Unordered_Map<Key, Value, Hash, Equal>::Bucket_Size(size_type index) cons
         return 0;
     
     size_type count = 0;
-    while (it != _list.end() && it->bucket == index)
+    while (it._iterator != _list.end() && it._iterator->bucket == index)
     {
         ++it;
         ++count;
@@ -492,37 +606,37 @@ void Unordered_Map<Key, Value, Hash, Equal>::Clear() noexcept
 template <class Key, class Value, class Hash, class Equal>
 Unordered_Map<Key, Value, Hash, Equal>::iterator Unordered_Map<Key, Value, Hash, Equal>::Begin() noexcept
 {
-    return _list.begin();
-};
+    return iterator(_list.begin());
+}
 
 template <class Key, class Value, class Hash, class Equal>
 Unordered_Map<Key, Value, Hash, Equal>::iterator Unordered_Map<Key, Value, Hash, Equal>::End() noexcept
 {
-    return _list.end();
-};
+    return iterator(_list.end());
+}
 
 template <class Key, class Value, class Hash, class Equal>
 Unordered_Map<Key, Value, Hash, Equal>::const_iterator Unordered_Map<Key, Value, Hash, Equal>::Begin() const noexcept
 {
-    return _list.cbegin();
-};
+    return iterator(_list.cbegin());
+}
 
 template <class Key, class Value, class Hash, class Equal>
 Unordered_Map<Key, Value, Hash, Equal>::const_iterator Unordered_Map<Key, Value, Hash, Equal>::End() const noexcept
 {
-    return _list.crend();
-};
+    return iterator(_list.crend());
+}
 
 template <class Key, class Value, class Hash, class Equal>
 Unordered_Map<Key, Value, Hash, Equal>::const_iterator Unordered_Map<Key, Value, Hash, Equal>::CBegin() const noexcept
 {
     return Begin();
-};
+}
 
 template <class Key, class Value, class Hash, class Equal>
 Unordered_Map<Key, Value, Hash, Equal>::const_iterator Unordered_Map<Key, Value, Hash, Equal>::CEnd() const noexcept
 {
     return End();
-};
+}
 
 #endif /* Unordered_Map_h */
