@@ -6,6 +6,7 @@
  */
 
 
+#include <list>
 int main()
 {
     Unordered_Map<int, std::string> map;
@@ -25,7 +26,7 @@ int main()
     {
         std::cout << exception.what() << std::endl;
     }
-    auto value = map[0] = "0";
+    [[maybe_unused]] auto& value = map[0] = "0";
     map.Insert({10, "10"});
     map.Insert({12, "12"});
     map.Insert({7, "7"});
@@ -47,7 +48,7 @@ int main()
     [[maybe_unused]] auto find1 = map.Find(10);
     [[maybe_unused]] auto find2 = map.Find(11);
     std::cout << "Unordered_Map" << std::endl;
-    for (Unordered_Map<int, std::string>::iterator it = map.Begin(); it != map.End(); ++it)
+    for (Unordered_Map<int, std::string>::Iterator it = map.Begin(); it != map.End(); ++it)
     {
         // it->data.first = it->data.first; // ключ const!!!
         it->second = it->second;
@@ -73,36 +74,36 @@ int main()
     [[maybe_unused]] auto compare5 = (map6 == map7);
     [[maybe_unused]] auto compare6 = (map6 != map7);
     
-    map.Erase(----map.End());
     std::cout << "Map: erase1" << std::endl;
+    map.Erase(----map.End());
     for (auto it = map.Begin(); it != map.End(); ++it)
     {
         std::cout << "Key = " << it->first << ", Value = " << it->second << std::endl;
     }
     std::cout << std::endl;
-    map.Erase(------map.End());
     std::cout << "Map: erase2" << std::endl;
-    for (Unordered_Map<int, std::string>::iterator it = map.Begin(); it != map.End(); ++it)
+    map.Erase(------map.End());
+    for (Unordered_Map<int, std::string>::Iterator it = map.Begin(); it != map.End(); ++it)
     {
         std::cout << "Key = " << it->first << ", Value = " << it->second << std::endl;
     }
     std::cout << std::endl;
-    map.Erase(7);
-    std::cout << "Map: erase 7" << std::endl;
+    std::cout << "Map: erase 0" << std::endl;
+    map.Erase(0);
     for (auto it = map.Begin(); it != map.End(); ++it)
     {
         std::cout << "Key = " << it->first << ", Value = " << it->second << std::endl;
     }
     std::cout << std::endl;
-    map.Erase(map.Begin(), --map.End());
     std::cout << "Map: erase all before end" << std::endl;
+    map.Erase(map.Begin(), --map.End());
     for (auto it = map.Begin(); it != map.End(); ++it)
     {
         std::cout << "Key = " << it->first << ", Value = " << it->second << std::endl;
     }
     std::cout << std::endl;
-    map.Clear();
     std::cout << "Map: clear" << std::endl;
+    map.Clear();
     for (auto it = map.Begin(); it != map.End(); ++it)
     {
         std::cout << "Key = " << it->first << ", Value = " << it->second << std::endl;
