@@ -17,21 +17,8 @@ class LinkedList
     using Const_Iterator = const Iterator;
     struct Node
     {
-        Node() = default;
-        explicit Node(const T& iValue, Node* iNext = nullptr) noexcept
-        {
-            value = iValue;
-            next = iNext;
-        }
-        
-        explicit Node(T&& iValue, Node* iNext = nullptr) noexcept
-        {
-            value = std::move(iValue);
-            next = iNext;
-        }
-        
         template <typename ...Args>
-        explicit Node(Node* iNext, Args&& ...args) noexcept :
+        Node(Node* iNext, Args&& ...args) noexcept :
         next(iNext),
         value(std::forward<Args>(args)...)
         {
@@ -84,13 +71,13 @@ private:
         if (!top_other)
             return;
         
-        Node* top = new Node(other._node->value, nullptr);
+        Node* top = new Node(nullptr, other._node->value);
         _node = top;
         top_other = top_other->next;
         
         while (top_other)
         {
-            top->next = new Node(top_other->value, nullptr);
+            top->next = new Node(nullptr, top_other->value);
             top = top->next;
             top_other = top_other->next;
         }
@@ -267,7 +254,7 @@ decltype(auto) LinkedList<T>::Emplace_Front(Args&& ...args)
 template <class T>
 void LinkedList<T>::Push_Front(const T& value)
 {
-    Node* node = new Node(value, _node);
+    Node* node = new Node(_node, value);
     _node = node;
     ++_size;
 }
@@ -275,7 +262,7 @@ void LinkedList<T>::Push_Front(const T& value)
 template <class T>
 void LinkedList<T>::Push_Front(T&& value)
 {
-    Node* node = new Node(std::move(value), _node);
+    Node* node = new Node(_node, std::move(value));
     _node = node;
     ++_size;
 }
@@ -402,7 +389,7 @@ LinkedList<T>::Iterator LinkedList<T>::Insert_After(const Iterator& it, const T&
     if (!it._node)
         throw std::runtime_error("iterator is empty");
     
-    Node* node = new Node(value, it._node);
+    Node* node = new Node(it._node, value);
     node->next = it._node->next;
     it._node->next = node;
     
