@@ -113,7 +113,7 @@ int main(int argc, const char * argv[])
     std::atomic<bool> flag = false;
     bool expected = true;
     const bool desired = true;
-    bool exchanged = flag.compare_exchange_strong(expected, desired);
+    [[maybe_unused]] bool exchanged = flag.compare_exchange_strong(expected, desired);
     // custom::Spinlock
     {
         Spinlock<custom::Spinlock>("custom::Spinlock");
@@ -124,8 +124,8 @@ int main(int argc, const char * argv[])
     }
     // atomic
     {
-        Spinlock<atomic::compare_exchange_strong::Spinlock>("atomic::compare_exchange_strong::Spinlock");
         Spinlock<atomic::compare_exchange_weak::Spinlock>("atomic::compare_exchange_weak::Spinlock");
+        Spinlock<atomic::compare_exchange_strong::Spinlock>("atomic::compare_exchange_strong::Spinlock");
     }
     // atomicflag::Spinlock
     {

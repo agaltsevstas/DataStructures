@@ -113,6 +113,21 @@ int main()
                             {220, 220},
                             {230, 230}};
     
+    std::cout << "Inorder: ";
+    for (const auto& value: numbers.InorderTraversal())
+        std::cout << value << ", ";
+    std::cout << std::endl;
+    
+    std::cout << "Preorder: ";
+    for (const auto& value: numbers.PreorderTraversal())
+        std::cout << value << ", ";
+    std::cout << std::endl;
+    
+    std::cout << "Postorder: ";
+    for (const auto& value: numbers.PostorderTraversal())
+        std::cout << value << ", ";
+    std::cout << std::endl;
+    
     for (auto it = numbers.Begin(); it != numbers.End(); ++it)
     {
         std::cout << "Key = " << it->first << ", Value = " << it->second << std::endl;

@@ -117,6 +117,63 @@ public:
     Const_Iterator CBegin() const noexcept;
     Const_Iterator CEnd() const noexcept;
     
+    // Чтение слева направо
+    std::vector<Key> InorderTraversal()
+    {
+        std::function<void(Node* node, std::vector<Key>& result)> traverse;
+        traverse = [&](Node* node, std::vector<Key>& result)
+        {
+            if (node)
+            {
+                traverse(node->leftChild, result);
+                result.emplace_back(node->value.first);
+                traverse(node->rightChild, result);
+            }
+        };
+        
+        std::vector<Key> result;
+        traverse(_root, result);
+        return result;
+    }
+    
+    // Чтение сверху вниз
+    std::vector<Key> PreorderTraversal()
+    {
+        std::function<void(Node* node, std::vector<Key>& result)> traverse;
+        traverse = [&](Node* node, std::vector<Key>& result)
+        {
+            if (node)
+            {
+                result.emplace_back(node->value.first);
+                traverse(node->leftChild, result);
+                traverse(node->rightChild, result);
+            }
+        };
+        
+        std::vector<Key> result;
+        traverse(_root, result);
+        return result;
+    }
+    
+    // Чтение снизу вверх
+    std::vector<Key> PostorderTraversal()
+    {
+        std::function<void(Node* node, std::vector<Key>& result)> traverse;
+        traverse = [&](Node* node, std::vector<Key>& result)
+        {
+            if (node)
+            {
+                traverse(node->leftChild, result);
+                traverse(node->rightChild, result);
+                result.emplace_back(node->value.first);
+            }
+        };
+        
+        std::vector<Key> result;
+        traverse(_root, result);
+        return result;
+    }
+    
 private:
     Node* _root = nullptr;
     Node* _begin = nullptr;
