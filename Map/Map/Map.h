@@ -106,6 +106,7 @@ public:
     Iterator Erase(Const_Iterator begin, Const_Iterator end);
     
     void Swap(Map& other) noexcept;
+    size_type Depth() const noexcept;
     bool Empty() const noexcept;
     size_type Size() const noexcept;
     void Clear() noexcept;
@@ -822,6 +823,24 @@ void Map<Key, Value, Compare>::Swap(Map& other) noexcept
 }
 
 template <class Key, class Value, class Compare>
+Map<Key, Value, Compare>::size_type Map<Key, Value, Compare>::Depth() const noexcept
+{
+    std::function<size_type(Node* node)> Depth;
+    Depth = [&](Node* node)->size_type
+    {
+        if (!node)
+            return 0u;
+        
+        size_type left_depth = Depth(node->leftChild);
+        size_type right_depth = Depth(node->rightChild);
+        
+        return left_depth > right_depth ? ++left_depth : ++right_depth;
+    };
+    
+    return Depth(_root);
+}
+
+template <class Key, class Value, class Compare>
 bool Map<Key, Value, Compare>::Empty() const noexcept
 {
     return Size() == 0;
@@ -836,7 +855,7 @@ Map<Key, Value, Compare>::size_type Map<Key, Value, Compare>::Size() const noexc
 template <class Key, class Value, class Compare>
 void Map<Key, Value, Compare>::Clear() noexcept
 {
-    std::function<void(Map::Node* node)> Clear;
+    std::function<void(Node* node)> Clear;
     Clear = [&](Node* node)
     {
         if (node)

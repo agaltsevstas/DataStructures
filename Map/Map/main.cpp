@@ -31,6 +31,7 @@ int main()
     map.Insert({5, "5"});
     map.Insert({6, "6"});
     
+    [[maybe_unused]] auto depth = map.Depth();
     [[maybe_unused]] auto empty = map.Empty();
     [[maybe_unused]] auto contains1 = map.Contains(10);
     [[maybe_unused]] auto contains2 = map.Contains(11);
