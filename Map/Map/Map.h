@@ -119,58 +119,58 @@ public:
     Const_Iterator CEnd() const noexcept;
     
     // Чтение слева направо
-    std::vector<Key> InorderTraversal()
+    std::vector<value_type> InorderTraversal()
     {
-        std::function<void(Node* node, std::vector<Key>& result)> traverse;
-        traverse = [&](Node* node, std::vector<Key>& result)
+        std::function<void(Node* node, std::vector<value_type>& result)> traverse;
+        traverse = [&](Node* node, std::vector<value_type>& result)
         {
             if (node)
             {
                 traverse(node->leftChild, result);
-                result.emplace_back(node->value.first);
+                result.emplace_back(node->value);
                 traverse(node->rightChild, result);
             }
         };
         
-        std::vector<Key> result;
+        std::vector<value_type> result;
         traverse(_root, result);
         return result;
     }
     
     // Чтение сверху вниз
-    std::vector<Key> PreorderTraversal()
+    std::vector<value_type> PreorderTraversal()
     {
-        std::function<void(Node* node, std::vector<Key>& result)> traverse;
-        traverse = [&](Node* node, std::vector<Key>& result)
+        std::function<void(Node* node, std::vector<value_type>& result)> traverse;
+        traverse = [&](Node* node, std::vector<value_type>& result)
         {
             if (node)
             {
-                result.emplace_back(node->value.first);
+                result.emplace_back(node->value);
                 traverse(node->leftChild, result);
                 traverse(node->rightChild, result);
             }
         };
         
-        std::vector<Key> result;
+        std::vector<value_type> result;
         traverse(_root, result);
         return result;
     }
     
     // Чтение снизу вверх
-    std::vector<Key> PostorderTraversal()
+    std::vector<value_type> PostorderTraversal()
     {
-        std::function<void(Node* node, std::vector<Key>& result)> traverse;
-        traverse = [&](Node* node, std::vector<Key>& result)
+        std::function<void(Node* node, std::vector<value_type>& result)> traverse;
+        traverse = [&](Node* node, std::vector<value_type>& result)
         {
             if (node)
             {
                 traverse(node->leftChild, result);
                 traverse(node->rightChild, result);
-                result.emplace_back(node->value.first);
+                result.emplace_back(node->value);
             }
         };
         
-        std::vector<Key> result;
+        std::vector<value_type> result;
         traverse(_root, result);
         return result;
     }

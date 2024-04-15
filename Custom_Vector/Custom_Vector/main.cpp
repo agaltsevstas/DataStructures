@@ -15,10 +15,11 @@ class Example
 public:
     
     Example() = default; // для Vector обязательно должен быть конструктор по-умолчанию
-    Example(const int number, const std::string& str) noexcept
+    Example(const int number, const std::string& str) noexcept :
+    _number(number),
+    _str(str)
     {
-        _number = number;
-        _str = str;
+        
     }
     
     Example(const Example& other) noexcept

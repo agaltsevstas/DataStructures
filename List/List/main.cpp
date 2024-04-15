@@ -11,10 +11,11 @@ class Example
 {
 public:
     
-    Example(const int number, const std::string& str) noexcept
+    Example(const int number, const std::string& str) noexcept :
+    _number(number),
+    _str(str)
     {
-        _number = number;
-        _str = str;
+        
     }
     
     Example(int&& number, std::string&& str) noexcept

@@ -9,7 +9,7 @@ namespace linked_list
         struct Node
         {
             template <typename ...Args>
-            explicit Node(Args&& ...args) noexcept :
+            Node(Args&& ...args) noexcept :
             value(std::forward<Args>(args)...)
             {
                 

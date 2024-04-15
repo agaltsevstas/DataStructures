@@ -115,18 +115,18 @@ int main()
                             {230, 230}};
     
     std::cout << "Inorder: ";
-    for (const auto& value: numbers.InorderTraversal())
-        std::cout << value << ", ";
+    for (const auto& [key, value]: numbers.InorderTraversal())
+        std::cout << "Key = " << key << ", Value = " << value << std::endl;
     std::cout << std::endl;
     
     std::cout << "Preorder: ";
-    for (const auto& value: numbers.PreorderTraversal())
-        std::cout << value << ", ";
+    for (const auto& [key, value]: numbers.PreorderTraversal())
+        std::cout << "Key = " << key << ", Value = " << value << std::endl;
     std::cout << std::endl;
     
     std::cout << "Postorder: ";
-    for (const auto& value: numbers.PostorderTraversal())
-        std::cout << value << ", ";
+    for (const auto& [key, value]: numbers.PostorderTraversal())
+        std::cout << "Key = " << key << ", Value = " << value << std::endl;
     std::cout << std::endl;
     
     for (auto it = numbers.Begin(); it != numbers.End(); ++it)

@@ -17,39 +17,24 @@
  */
 class Logger
 {
-    friend std::default_delete<Logger>;
+    friend std::default_delete<Logger>; // нужен для std::unique_ptr<Logger>
 public:
-    
     /*!
-     * @brief Четыре уровня подробности лога:
-     * DEBUG_LEVEL_DISABLED - Полное отключение лога
-     * DEBUG_LEVEL_ERROR - Вывод только ошибок
-     * DEBUG_LEVEL_WARNING - Вывод предупреждений и ошибок
-     * DEBUG_LEVEL_INFO - Вывод сообщений
+     * @brief Четыре уровня вида сообщений
+     * DISABLED - Полное отключение лога
+     * INFO - Информационное сообщение
+     * WARNING - Предупреждение
+     * ERROR - Ошибка
+     * ALL - Сообщения всех видов (информационное сообщение, предупреждение, ошибка)
      */
-    enum DebugLevel
+    enum LogLevel
     {
-        DEBUG_LEVEL_DISABLED = 0,
-        DEBUG_LEVEL_ERROR = 1,
-        DEBUG_LEVEL_WARNING = 2,
-        DEBUG_LEVEL_INFO = 3,
+        DISABLED = 0,
+        INFO,
+        WARNING,
+        ERROR,
+        ALL
     };
-    
-    /*!
-     * @brief Четыре уровня вида сообщений:
-     * MESSAGE_INFO - Информационное сообщение
-     * MESSAGE_WARNING - Предупреждение
-     * MESSAGE_ERROR - Ошибка
-     * MESSAGE_ALL - Сообщения всех видов (информационное сообщение, предупреждение, ошибка)
-     */
-    enum MessageType
-    {
-        MESSAGE_INFO = 1,
-        MESSAGE_WARNING,
-        MESSAGE_ERROR,
-        MESSAGE_ALL
-    };
-    
     
     /*!
      * @brief Создание единственного объекта
@@ -63,9 +48,9 @@ public:
     
     /*!
      * @TODO: Установление уровня подробности лога
-     * @param iLevel - Уровень лога
+     * @param iLogLevel - Уровень лога
      */
-    static void SetDebugLevel(DebugLevel iLevel) noexcept;
+    static void SetDebugLevel(LogLevel iLogLevel) noexcept;
     
     /*!
      * @details Производный класс от класссов стандартной библиотеки.
@@ -77,11 +62,12 @@ public:
     class Streamer : public std::ostream
     {
     public:
+        
         /*!
          * @brief Консруктор для связывания потока вывода со строковым буфером
-         * @param iMessageType - Тип сообщения
+         * @param iLogLevel - Уровень лога
          */
-        Streamer(Logger::MessageType iMessageType) noexcept;
+        Streamer(LogLevel iLogLevel);
         
         /*!
          * @brief Деструктор для удаление потока буфера
@@ -95,9 +81,9 @@ public:
             
             /*!
              * @brief Конструктор для отправление типа сообщения
-             * @param iMessageType - Тип сообщения
+             * @param iLogLevel - Уровень лога
              */
-            StringBuffer(Logger::MessageType iMessageType) noexcept;
+            StringBuffer(LogLevel iLogLevel) noexcept;
             
             /*!
              * @brief Деструктор.
@@ -112,13 +98,13 @@ public:
             virtual int sync() override;
             
         private:
-            Logger::MessageType _messageType;
+            LogLevel _logLevel;
         };
     };
     
-    inline static Streamer info = Logger::MESSAGE_INFO;       /// Объект потока для информационных сообщений
-    inline static Streamer warning = Logger::MESSAGE_WARNING; /// Объект потока для предупреждений
-    inline static Streamer error = Logger::MESSAGE_ERROR;     /// Объект потока для ошибок
+    inline static Streamer info = INFO;       /// Объект потока для информационных сообщений
+    inline static Streamer warning = WARNING; /// Объект потока для предупреждений
+    inline static Streamer error = ERROR;     /// Объект потока для ошибок
     
 public:
     Logger() {}
@@ -159,9 +145,9 @@ public:
      * @brief Запись в буфер.
      * Запись производится в определенный буфер в зависимости от уровня вида сообщения
      * @param iMessage - Записываемое сообщение
-     * @param iMessageType - Уровень вида сообщений
+     * @param iLogLevel - Уровень лога
      */
-    static void WriteToBuffer(const std::string& iMessage, MessageType iMessageType);
+    static void WriteToBuffer(const std::string& iMessage, LogLevel iLogLevel);
     
     /*!
      * @brief Запись в файл
@@ -194,9 +180,9 @@ private:
     inline static std::string _warningBuffer;     /// Буфер для хранения предупреждений
     inline static std::string _errorBuffer;       /// Буфер для хранения ошибок
     inline static std::string _allMessagesBuffer; /// Буфер для хранения всех видов сообщений
-    inline static DebugLevel _debugLevel = DEBUG_LEVEL_DISABLED; /// Уровень подробности лога
-    static std::unique_ptr<Logger> _logger; /// Объект-одиночка
-    static std::ofstream _logFile;         /// Выходной файловый поток
+    inline static LogLevel _logLevel = DISABLED;  /// Уровень подробности лога
+    static std::unique_ptr<Logger> _logger;       /// Объект-одиночка
+    static std::ofstream _logFile;                /// Выходной файловый поток
 };
 
 #endif /* Logger_h */

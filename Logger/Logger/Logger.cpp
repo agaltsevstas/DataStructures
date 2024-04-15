@@ -4,6 +4,8 @@
 #include <fstream>
 #include <thread>
 
+#pragma warning(disable : 4996)
+
 
 std::string LocalTime()
 {
@@ -23,7 +25,7 @@ void Logger::Instance()
     {
         _logger.reset(new Logger());
         static Logger instance; // Объект-одиночка
-        _debugLevel = DEBUG_LEVEL_INFO;
+        _logLevel = INFO;
         
         const std::string currrentPath = std::filesystem::current_path().string();
         const std::string fileName = LocalTime() + ".log";
@@ -36,13 +38,13 @@ void Logger::Instance()
     }
 }
 
-void Logger::SetDebugLevel(Logger::DebugLevel iDebugLevel) noexcept
+void Logger::SetDebugLevel(LogLevel iLogLevel) noexcept
 {
-    _debugLevel = iDebugLevel;
+    _logLevel = iLogLevel;
 }
 
-Logger::Streamer::Streamer(Logger::MessageType iMessageType) noexcept
-: std::ostream(new StringBuffer(iMessageType))
+Logger::Streamer::Streamer(LogLevel iLogLevel)
+: std::ostream(new StringBuffer(iLogLevel))
 {
 }
 
@@ -51,8 +53,8 @@ Logger::Streamer::~Streamer()
     delete rdbuf();
 }
 
-Logger::Streamer::StringBuffer::StringBuffer(Logger::MessageType iMessageType) noexcept
-: _messageType(iMessageType)
+Logger::Streamer::StringBuffer::StringBuffer(LogLevel iLogLevel) noexcept
+: _logLevel(iLogLevel)
 {
 }
 
@@ -69,17 +71,17 @@ int Logger::Streamer::StringBuffer::sync()
         return 0;
     }
     str(""); // Очищение буфера
-    switch (_messageType)
+    switch (_logLevel)
     {
-        case MESSAGE_INFO:
+        case INFO:
             Logger::_logger->WriteInfo(text);
             break;
             
-        case MESSAGE_WARNING:
+        case WARNING:
             Logger::_logger->WriteWarning(text);
             break;
             
-        case MESSAGE_ERROR:
+        case ERROR:
             Logger::_logger->WriteError(text);
             break;
     }
@@ -89,56 +91,56 @@ int Logger::Streamer::StringBuffer::sync()
 
 void Logger::WriteInfo(const std::string& iMessage)
 {
-    if (_debugLevel >= DEBUG_LEVEL_INFO)
+    if (_logLevel >= INFO)
     {
         const std::string localTime = "[" + LocalTime() + "] ";
         const std::string str = localTime + iMessage;
         auto thread = std::thread([this, &str]() { this->WriteToFile(str); }); // Отдельный поток, в котром осуществляется запись в файл
-        WriteToBuffer(str, MessageType::MESSAGE_INFO);
+        WriteToBuffer(str, INFO);
         thread.join();
     }
 }
 
 void Logger::WriteWarning(const std::string& iMessage)
 {
-    if (_debugLevel >= DEBUG_LEVEL_WARNING)
+    if (_logLevel >= WARNING)
     {
         const std::string localTime = "[" + LocalTime() + "] ";
         const std::string type = "[Warning] ";
         const std::string str = localTime + type + iMessage;
         auto thread = std::thread([this, &str]() { this->WriteToFile(str); }); // Отдельный поток, в котром осуществляется запись в файл
-        WriteToBuffer(str, MessageType::MESSAGE_WARNING);
+        WriteToBuffer(str, WARNING);
         thread.join();
     }
 }
 
 void Logger::WriteError(const std::string& iMessage)
 {
-    if (_debugLevel >= DEBUG_LEVEL_ERROR)
+    if (_logLevel >= ERROR)
     {
         const std::string localTime = "[" + LocalTime() + "] ";
         const std::string type = "[Error] ";
         const std::string str = localTime + type + iMessage;
         auto thread = std::thread([this, &str]() { this->WriteToFile(str); }); // Отдельный поток, в котром осуществляется запись в файл
-        WriteToBuffer(str, MessageType::MESSAGE_ERROR);
+        WriteToBuffer(str, ERROR);
         thread.join();
     }
 }
 
-void Logger::WriteToBuffer(const std::string& message, MessageType iMessageType)
+void Logger::WriteToBuffer(const std::string& message, LogLevel iLogLevel)
 {
     _allMessagesBuffer += message;
-    switch (iMessageType)
+    switch (iLogLevel)
     {
-        case MESSAGE_INFO:
+        case INFO:
             _infoBuffer += message;
             break;
             
-        case MESSAGE_WARNING:
+        case WARNING:
             _warningBuffer += message;
             break;
             
-        case MESSAGE_ERROR:
+        case ERROR:
             _errorBuffer += message;
             break;
     }

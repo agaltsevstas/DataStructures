@@ -32,7 +32,8 @@ private:
 };
 
 template <typename TKey, typename TValue>
-LRUCache<TKey, TValue>::LRUCache(int capacity) noexcept : _capacity(capacity)
+LRUCache<TKey, TValue>::LRUCache(int capacity) noexcept : 
+_capacity(capacity)
 {
     
 }
