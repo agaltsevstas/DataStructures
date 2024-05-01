@@ -353,6 +353,7 @@ LinkedList<T>::Iterator LinkedList<T>::Begin() noexcept
     return Iterator(*this, _node);
 };
 
+/// TODO
 template <class T>
 LinkedList<T>::Iterator LinkedList<T>::End() noexcept
 {
@@ -365,6 +366,7 @@ LinkedList<T>::Const_Iterator LinkedList<T>::Begin() const noexcept
     return Iterator(*this, _node);
 }
 
+/// TODO
 template <class T>
 LinkedList<T>::Const_Iterator LinkedList<T>::End() const noexcept
 {

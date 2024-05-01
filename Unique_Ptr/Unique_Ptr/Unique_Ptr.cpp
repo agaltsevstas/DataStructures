@@ -44,7 +44,7 @@ namespace STD
     template <class TClass, typename Deleter = Default_Deleter<TClass>>
     class Unique_Ptr
     {
-        using element_type = std::remove_extent_t<TClass>; // C++17: Для подддержки использования типа TClass[] - Unique_Ptr<int[]> mass(new int[10]);
+        using element_type = std::remove_extent_t<TClass>; // C++17: Для поддержки использования типа TClass[] - Unique_Ptr<int[]> mass(new int[10]);
         
         /// Конструктор копирования
         explicit Unique_Ptr(const Unique_Ptr& other) noexcept = delete;
@@ -229,10 +229,11 @@ namespace STD
      */
     // Make_Shared - более безопасный чем Shared_Ptr::Reset
     template <class TClass, typename ...TArgs>
-    Unique_Ptr<TClass> Make_Unique(TArgs&& ...iArgs)
+    inline Unique_Ptr<TClass> Make_Unique(TArgs&& ...iArgs)
     {
         // std::allocate_unique<TClass>(allocator<TClass>(), std::forward<_Args>(iArgs)...);
-        return Unique_Ptr<TClass>(new TClass(std::forward<TArgs>(iArgs)...));
+        using element_type = std::remove_extent_t<TClass>; // C++17: Для поддержки использования типа Make_Unique<int[]>(10);
+        return Unique_Ptr<TClass>(new element_type(std::forward<TArgs>(iArgs)...));
     }
 }
 
@@ -291,6 +292,7 @@ int main()
         // Unique_Ptr<int> mass(new int[10]); // Вызовется Default_Deleter<int> по-умолчанию и будет утечка памяти для 9 элементов
         Unique_Ptr<int[]> mass(new int[10]); // C++17: Вызовется правильный deleter
         [[maybe_unused]] auto& mass_index_0 = mass[(uint64_t)0] = 5; // 1 элемент массива = 5
+        Unique_Ptr<int[]> mass_unique = Make_Unique<int[]>(10);
     }
     
     // Deleter

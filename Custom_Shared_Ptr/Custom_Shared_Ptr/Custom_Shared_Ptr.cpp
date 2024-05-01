@@ -36,11 +36,14 @@ namespace STD
         }
     };
 
+/*
+ Shared_Ptr (сильный указатель - владеет ресурсом): производит два раздельных выделения памяти: аллокация управляемого объекта + Control Block(atomic shared_count (сильные ссылки), atomic weak_count (слабые ссылки), allocator, deleter), вместо одновременного выделения памяти make_shared. При вызове конструктора копирования или оператора копирования ++shared_count, при вызове коструктора перемещения, оператора перемещения или деструктора --shared_count. При shared_count == 0 удаляет объект + weak_count == 0 удаляет Control Block.
+ */
 
     template <class TClass>
     class Custom_Shared_Ptr
     {
-        using element_type = std::remove_extent_t<TClass>; // C++17: Для подддержки использования типа T[] - Unique_Ptr<int[]> mass(new int[10]);
+        using element_type = std::remove_extent_t<TClass>; // C++17: Для поддержки использования типа T[] - Unique_Ptr<int[]> mass(new int[10]);
     public:
         /// Конструктор по-умолчанию
         Custom_Shared_Ptr() noexcept;
@@ -326,12 +329,26 @@ namespace STD
         }
     }
 
+    /*
+     make_shared - функция, не требующая дублирования типа (auto ptr = make_shared<int>(10)). Стоит использовать make_shared вместо shared_ptr<T>(new T()). make_shared - нужна для повышения производительности по сравнению shared_ptr(new), которая с помощью вызова конструктора требуют минимум две аллокации: одну — для размещения объекта, вторую — для Control Block.
+     Плюсы:
+     - невозможна утечка памяти.
+     - не нужно писать new.
+     - там не нужно дублировать тип shared<int> number(new int(1)) -> auto number = make_shared<int>(1).
+     - make_shared - производит одно выделение памяти вместе: аллокация управляемого объекта + Control Block(shared_count (сильные ссылки), weak_count (слабые ссылки), allocator, deleter), следовательно они будут находиться в одном участке памяти и работать с ними быстрее, по сравнению с раздельным выделением памяти в shared_ptr.
+     Минусы:
+     - не может использовать deleter.
+     - перегруженные operator new и operator delete в классе будут проигнорированы в make_shared.
+     - make_shared не может вызывать private конструкторы внутри метода (например, синглтон).
+     - для make_shared нужно ждать shared_count == weak_count == 0, чтобы удалить объект + Control Block.
+     */
     // Make_Shared - более безопасный чем Shared_Ptr::Reset
     template <class TClass, typename ...TArgs>
     Custom_Shared_Ptr<TClass> Make_Shared(TArgs&& ...iArgs)
     {
         // std::allocate_shared<TClass>(allocator<TClass>(), std::forward<_Args>(iArgs)...);
-        return Custom_Shared_Ptr<TClass>(new TClass(std::forward<TArgs>(iArgs)...));
+        using element_type = std::remove_extent_t<TClass>; // C++17: Для поддержки использования типа Make_Shared<int[]>(10);
+        return Custom_Shared_Ptr<TClass>(new element_type(std::forward<TArgs>(iArgs)...));
     }
 }
 
@@ -412,6 +429,7 @@ int main()
         // Custom_Shared_Ptr<int> mass(new int[10]); // Вызовется Default_Deleter<int> по-умолчанию и будет утечка памяти для 9 элементов
         Custom_Shared_Ptr<int[]> mass(new int[10]); // C++17: Вызовется правильный deleter
         [[maybe_unused]] auto& mass_index_0 = mass[(uint64_t)0] = 5; // 1 элемент массива = 5
+        [[maybe_unused]] Custom_Shared_Ptr<int[]> mass_shared = Make_Shared<int[]>(10);
     }
     
     // Deleter, иногда XCode выдает ошибку: malloc: Heap corruption detected, free list is damaged

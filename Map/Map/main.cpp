@@ -12,6 +12,7 @@
         https://github.com/pradykaushik/Map-Container/blob/master/Map.hpp
  */
 
+
 int main()
 {
     Map<int, std::string> map;
@@ -41,6 +42,14 @@ int main()
     [[maybe_unused]] auto find2 = map.Find(11);
     std::cout << "Map" << std::endl;
     for (Map<int, std::string>::Iterator it = map.Begin(); it != map.End(); ++it)
+    {
+        // it->first = it->first; // ключ const!!!
+        it->second = it->second;
+        std::cout << "Key = " << it->first << ", Value = " << it->second << std::endl;
+    }
+    std::cout << std::endl;
+    std::cout << "Map: reverse" << std::endl;
+    for (Map<int, std::string>::ReverseIterator it = map.RBegin(); it != map.REnd(); ++it)
     {
         // it->first = it->first; // ключ const!!!
         it->second = it->second;

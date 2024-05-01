@@ -89,6 +89,7 @@ int main()
         // Shared_Ptr<int> mass(new int[10]); // Вызовется Default_Deleter<int> по-умолчанию и будет утечка памяти для 9 элементов
         Shared_Ptr<int[]> mass(new int[10]); // C++17: Вызовется правильный deleter
         [[maybe_unused]] auto& mass_index_0 = mass[(uint64_t)0] = 5; // 1 элемент массива = 5
+        [[maybe_unused]] Shared_Ptr<int[]> mass_shared = Make_Shared<int[]>(10);
     }
     
     // Deleter, иногда XCode выдает ошибку: malloc: Heap corruption detected, free list is damaged

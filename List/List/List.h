@@ -480,6 +480,7 @@ List<T>::Iterator List<T>::Begin() noexcept
     return Iterator(*this, _begin);
 };
 
+/// TODO
 template <class T>
 List<T>::Iterator List<T>::End() noexcept
 {
@@ -492,6 +493,7 @@ List<T>::Const_Iterator List<T>::Begin() const noexcept
     return Const_Iterator(*this, _begin);
 };
 
+/// TODO
 template <class T>
 List<T>::Const_Iterator List<T>::End() const noexcept
 {

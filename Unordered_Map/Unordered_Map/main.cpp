@@ -6,7 +6,6 @@
  */
 
 
-#include <list>
 int main()
 {
     Unordered_Map<int, std::string> map;

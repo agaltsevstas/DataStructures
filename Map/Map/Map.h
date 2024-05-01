@@ -118,6 +118,13 @@ public:
     Const_Iterator CBegin() const noexcept;
     Const_Iterator CEnd() const noexcept;
     
+    ReverseIterator RBegin() noexcept;
+    ReverseIterator REnd() noexcept;
+    Const_ReverseIterator RBegin() const noexcept;
+    Const_ReverseIterator REnd() const noexcept;
+    Const_ReverseIterator CRBegin() const noexcept;
+    Const_ReverseIterator CREnd() const noexcept;
+    
     // Чтение слева направо
     std::vector<value_type> InorderTraversal()
     {
@@ -177,7 +184,7 @@ public:
     
 private:
     Node* _root = nullptr;
-    Node* _begin = nullptr;
+    Node* _begin = nullptr; // TODO: REnd()
     Node* _end = new Node();
     size_type _size = 0u;
 };
@@ -186,6 +193,7 @@ template <class Key, class Value, class Compare>
 class Map<Key, Value, Compare>::Iterator
 {
     friend class Map;
+    friend class ReverseIterator;
 public:
     Iterator(const Map& map, Node* node) :
     _map(map)
@@ -210,14 +218,14 @@ public:
         }
         else
         {
-            Node* node = _node->parent;
-            while (node && _node == node->rightChild)
+            Node* parent = _node->parent;
+            while (parent && parent->rightChild == _node)
             {
-                _node = node;
-                node = node->parent;
+                _node = parent;
+                parent = parent->parent;
             }
             
-            _node = node;
+            _node = parent;
         }
         
         return *this;
@@ -248,7 +256,16 @@ public:
         else
         {
             if (_node->parent)
-                _node = _node->parent;
+            {
+                Node* parent = _node->parent;
+                while (parent && parent->leftChild == _node)
+                {
+                    _node = parent;
+                    parent = parent->parent;
+                }
+                
+                _node = parent;
+            }
             else
                 _node = _map._end;
         }
@@ -327,7 +344,7 @@ public:
 
     inline ReverseIterator& operator++()
     {
-        _node = --Iterator(_map, _node);
+        _node = (--Iterator(_map, _node))._node;
         return *this;
     }
 
@@ -340,7 +357,7 @@ public:
 
     inline ReverseIterator& operator--()
     {
-        _node = ++Iterator(_map, _node);
+        _node = (++Iterator(_map, _node))._node;
         return *this;
     }
 
@@ -912,6 +929,46 @@ template <class Key, class Value, class Compare>
 auto Map<Key, Value, Compare>::CEnd() const noexcept -> Map<Key, Value, Compare>::Const_Iterator
 {
     return End();
+}
+
+template <class Key, class Value, class Compare>
+Map<Key, Value, Compare>::ReverseIterator Map<Key, Value, Compare>::RBegin() noexcept
+{
+    return _end->parent ? ReverseIterator(*this, _end->parent) : ReverseIterator(*this, _end);
+}
+
+template <class Key, class Value, class Compare>
+Map<Key, Value, Compare>::ReverseIterator Map<Key, Value, Compare>::REnd() noexcept
+{
+    return _begin ? ReverseIterator(*this, _begin) : ReverseIterator(*this, _end);
+}
+
+// Обход ошибки: C2373    Map<Key, Value, Compare>::RBegin: переопределение
+template <class Key, class Value, class Compare>
+auto Map<Key, Value, Compare>::RBegin() const noexcept -> Map<Key, Value, Compare>::Const_ReverseIterator
+{
+    return _end->parent ? Const_ReverseIterator(*this, _end->parent) : Const_ReverseIterator(*this, _end);
+}
+
+// Обход ошибки: C2373    Map<Key, Value, Compare>::REnd: переопределение
+template <class Key, class Value, class Compare>
+auto Map<Key, Value, Compare>::REnd() const noexcept -> Map<Key, Value, Compare>::Const_ReverseIterator
+{
+    return _begin ? Const_ReverseIterator(*this, _begin) : Const_ReverseIterator(*this, _end);
+}
+
+// Обход ошибки: C2373    Map<Key, Value, Compare>::CRBegin: переопределение
+template <class Key, class Value, class Compare>
+auto Map<Key, Value, Compare>::CRBegin() const noexcept -> Map<Key, Value, Compare>::Const_ReverseIterator
+{
+    return RBegin();
+}
+
+// Обход ошибки: C2373    Map<Key, Value, Compare>::CREnd: переопределение
+template <class Key, class Value, class Compare>
+auto Map<Key, Value, Compare>::CREnd() const noexcept -> Map<Key, Value, Compare>::Const_ReverseIterator
+{
+    return REnd();
 }
 
 #endif /* Map_h */
