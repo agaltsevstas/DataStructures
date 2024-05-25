@@ -249,8 +249,7 @@ Vector<T>& Vector<T>::operator=(const Vector& other)
     if (this == &other) // object = object
         return *this;
 
-    Vector tmp(other);
-    Swap(tmp);
+    Vector(other).Swap(*this);
     
     return *this;
 }
