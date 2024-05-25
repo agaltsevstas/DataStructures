@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "main::$_9::operator()() const:main.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "ptr">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "main::$_7::operator()() const:main.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "main::$_9::operator()():main.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "main:main.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "number1">
+            </PersistentString>
+            <PersistentString
+               value = "ptr">
+            </PersistentString>
+            <PersistentString
+               value = "str">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
