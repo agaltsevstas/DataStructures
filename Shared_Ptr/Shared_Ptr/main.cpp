@@ -10,6 +10,22 @@
         https://github.com/google/shipshape/blob/master/third_party/proto/src/google/protobuf/stubs/shared_ptr.h
  */
 
+struct A
+{
+    ~A()
+    {
+        std::cout << "~A()" << std::endl;
+    }
+};
+
+struct B : A
+{
+    ~B()
+    {
+        std::cout << "~B()" << std::endl;
+    }
+};
+
 
 auto Exception(const auto& value)
 {
@@ -27,6 +43,20 @@ void function(const STD::Shared_Ptr<T>& ptr, const auto& value)
 int main()
 {
     using namespace STD;
+    
+    /* Деструктор struct A - невиртуальный, поэтому должно вызваться только деструктор: ~A() - это неверно. Shared_Ptr хранит внутри себя deleter, который знает тип объекта, переданного в конструктор, и поэтому будут вызываться все деструкторы:
+     ~B()
+     ~A()
+     */
+    
+    /// TODO: Shared_Ptr<A> base_ptr1 = Make_Shared<B>();
+    
+    /*
+     Если заменить Shared_Ptr на std::unique_ptr, то в std::unique_ptr deleter является частью типа, поэтому будет вызываться только деструктор:
+     ~A()
+     */
+    
+    std::unique_ptr<A> base_ptr2 = std::make_unique<B>();
     
     /*
      До C++17, После C++17 вроде как проблема решена
