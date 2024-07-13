@@ -1,5 +1,6 @@
 #include "VectorBool.h"
 
+#include <vector>
 
 /*
  Лекция: https://www.youtube.com/watch?v=kUqXNSgdd5A&ysclid=lu8lgbqu7g137468251
@@ -33,6 +34,9 @@ public:
     
     Example& operator=(const Example& other) noexcept
     {
+        if (this == &other)
+            return *this;
+        
         _number = other._number;
         _str = other._str;
         return *this;
@@ -40,6 +44,9 @@ public:
     
     Example& operator=(Example&& other) noexcept
     {
+        if (this == &other)
+            return *this;
+        
         _number = std::exchange(other._number, 0);
         _str = std::move(other._str);
         return *this;

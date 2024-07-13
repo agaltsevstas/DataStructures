@@ -3,4 +3,68 @@
    uuid = "5C3DA9BE-A2E6-46FD-8206-277E36435913"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "8E842026-E395-443B-83D6-29D940D804C0"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Unordered_Map/main.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "29"
+            endingLineNumber = "29"
+            landmarkName = "main()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "10601286-13E8-4974-B0DC-C77BFDA3E710"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Unordered_Map/Unordered_Map.h"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "399"
+            endingLineNumber = "399"
+            landmarkName = "Emplace(args)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "10601286-13E8-4974-B0DC-C77BFDA3E710 - 3fa5b10a7e579840"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "std::__1::pair&lt;Unordered_Map&lt;int, std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt;&gt;, std::__1::hash&lt;int&gt;, Equal_To&lt;int&gt;&gt;::Iterator, bool&gt; Unordered_Map&lt;int, std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt;&gt;, std::__1::hash&lt;int&gt;, Equal_To&lt;int&gt;&gt;::Emplace&lt;std::__1::pair&lt;int, std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt;&gt;&gt;&gt;(std::__1::pair&lt;int, std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt;&gt;&gt;&amp;&amp;)"
+                  moduleName = "Unordered_Map"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/agaltsevstas/Yandex.Disk-agaltsev.stas.localized/%D0%9A%D0%BE%D0%BC%D0%BF%D1%8C%D1%8E%D1%82%D0%B5%D1%80%20SOSIMBA/Programming/%D0%A1%D0%BE%D0%B1%D0%B5%D1%81/datastructures/Unordered_Map/Unordered_Map/Unordered_Map.h"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "399"
+                  endingLineNumber = "399">
+               </Location>
+               <Location
+                  uuid = "10601286-13E8-4974-B0DC-C77BFDA3E710 - 6040c63bf5f40d86"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "std::__1::pair&lt;Unordered_Map&lt;int, std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt;&gt;, std::__1::hash&lt;int&gt;, Equal_To&lt;int&gt;&gt;::Iterator, bool&gt; Unordered_Map&lt;int, std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt;&gt;, std::__1::hash&lt;int&gt;, Equal_To&lt;int&gt;&gt;::Emplace&lt;std::__1::pair&lt;int const, std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt;&gt;&gt; const&gt;(std::__1::pair&lt;int const, std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt;&gt;&gt; const&amp;&amp;)"
+                  moduleName = "Unordered_Map"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/agaltsevstas/Yandex.Disk-agaltsev.stas.localized/%D0%9A%D0%BE%D0%BC%D0%BF%D1%8C%D1%8E%D1%82%D0%B5%D1%80%20SOSIMBA/Programming/%D0%A1%D0%BE%D0%B1%D0%B5%D1%81/datastructures/Unordered_Map/Unordered_Map/Unordered_Map.h"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "399"
+                  endingLineNumber = "399">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

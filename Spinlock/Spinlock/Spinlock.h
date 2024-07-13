@@ -83,6 +83,7 @@ namespace custom
                 // LOAD (no) ↑ STORE (no)
                 _flag = false;
                 // LOAD (no) ↓ STORE (no)
+                _thread_id = std::thread::id();
             }
         }
         
