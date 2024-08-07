@@ -29,7 +29,7 @@ namespace linked_list
         Stack& operator=(Stack&& other) noexcept;
         template <typename ...Args>
         // Помещает новый элемент на вершину стека. Элемент создается на месте, т.е. операции копирования или перемещения не выполняются. Конструктор элемента вызывается с теми же аргументами, что и функция.
-        decltype(auto) Emplace(Args&& ...args);
+        decltype(auto) Emplace(Args&& ...args); // decltype(auto) - не отбрасывает ссылки и возвращает lvalue, иначе rvalue
         void Push(const T& value);
         void Push(T&& value);
         T& Top();
@@ -117,7 +117,7 @@ namespace linked_list
     // Помещает новый элемент на вершину стека. Элемент создается на месте, т.е. операции копирования или перемещения не выполняются. Конструктор элемента вызывается с теми же аргументами, что и функция.
     template <class T>
     template <typename ...Args>
-    decltype(auto) Stack<T>::Emplace(Args&& ...args)
+    decltype(auto) Stack<T>::Emplace(Args&& ...args) // decltype(auto) - не отбрасывает ссылки и возвращает lvalue, иначе rvalue
     {
         Node* node = new Node(_head, std::forward<Args>(args)...);
         _head = node;

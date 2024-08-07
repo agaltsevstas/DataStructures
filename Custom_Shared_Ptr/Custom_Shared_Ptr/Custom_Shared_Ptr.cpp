@@ -352,7 +352,7 @@ namespace STD
     }
 }
 
-auto Exception(const auto& value)
+decltype(auto) Exception(const auto& value) // decltype(auto) - не отбрасывает ссылки и возвращает lvalue, иначе rvalue
 {
     // throw "Error!";
     return value;

@@ -144,7 +144,7 @@ public:
     void Push_Back(const T& value);
     void Push_Back(T&& value);
     template <typename ...Args>
-    decltype(auto) Emplace_Back(Args&& ...args);
+    decltype(auto) Emplace_Back(Args&& ...args); // decltype(auto) - не отбрасывает ссылки и возвращает lvalue, иначе rvalue
     void Pop_Back();
     reference At(size_type index);
     const_reference At(size_type index) const;
@@ -318,7 +318,7 @@ void Vector<T>::Push_Back(T&& value)
 
 template <class T>
 template <typename ...Args>
-decltype(auto) Vector<T>::Emplace_Back(Args&& ...args)
+decltype(auto) Vector<T>::Emplace_Back(Args&& ...args) // decltype(auto) - не отбрасывает ссылки и возвращает lvalue, иначе rvalue
 {
     if (_size == _capacity)
     {

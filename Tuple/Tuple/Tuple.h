@@ -110,7 +110,7 @@ namespace tuple
 
         // Функция, вызывающая метафункцию
         template <size_t index, template <typename...> class Tuple, typename... Args>
-        auto Get(const Tuple<Args...>& tuple)
+        decltype(auto) Get(const Tuple<Args...>& tuple) // decltype(auto) - не отбрасывает ссылки и возвращает lvalue, иначе rvalue
         {
             return GetHelper<index, Tuple<Args...>>::Get(tuple);
         }
@@ -204,7 +204,7 @@ namespace tuple
         };
 
         template<size_t index, typename Head, typename... Tail>
-        auto Get(const Tuple<Head, Tail...>& tuple)
+        decltype(auto) Get(const Tuple<Head, Tail...>& tuple) // decltype(auto) - не отбрасывает ссылки и возвращает lvalue, иначе rvalue
         {
             return GetHelper<index, Head, Tail...>::value(tuple);
         }

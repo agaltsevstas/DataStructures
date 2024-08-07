@@ -40,7 +40,7 @@ public:
     LinkedList& operator=(LinkedList&& other) noexcept;
     bool operator==(const LinkedList& other);
     template <typename ...Args>
-    decltype(auto) Emplace_Front(Args&& ...args);
+    decltype(auto) Emplace_Front(Args&& ...args); // decltype(auto) - не отбрасывает ссылки и возвращает lvalue, иначе rvalue
     void Push_Front(const T& value);
     void Push_Front(T&& value);
     void Pop_Front();
@@ -243,7 +243,7 @@ bool LinkedList<T>::operator==(const LinkedList& other)
 
 template <class T>
 template <typename ...Args>
-decltype(auto) LinkedList<T>::Emplace_Front(Args&& ...args)
+decltype(auto) LinkedList<T>::Emplace_Front(Args&& ...args) // decltype(auto) - не отбрасывает ссылки и возвращает lvalue, иначе rvalue
 {
     Node* node = new Node(_node, std::forward<Args>(args)...);
     _node = node;

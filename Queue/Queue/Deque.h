@@ -43,7 +43,7 @@ namespace DEQUE
         }
         
         template<class... Args>
-        decltype(auto) Emplace(Args&& ...args)
+        decltype(auto) Emplace(Args&& ...args) // decltype(auto) - не отбрасывает ссылки и возвращает lvalue, иначе rvalue
         {
             return _container.emplace_back(std::forward<Args>(args)...);
         }

@@ -54,13 +54,13 @@ private:
 };
 
 template <class T>
-auto Begin(const T& array) -> decltype(array.Begin())
+decltype(auto) Begin(const T& array) // decltype(auto) - не отбрасывает ссылки и возвращает lvalue, иначе rvalue
 {
     return array.Begin();
 }
 
 template <class T>
-auto End(const T& array) -> decltype(array.End())
+decltype(auto) End(const T& array) // decltype(auto) - не отбрасывает ссылки и возвращает lvalue, иначе rvalue
 {
     return array.End();
 }

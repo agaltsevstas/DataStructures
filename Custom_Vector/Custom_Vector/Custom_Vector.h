@@ -45,7 +45,7 @@ public:
     void Push_Back(const T& value);
     void Push_Back(T&& value);
     template <typename ...Args>
-    decltype(auto) Emplace_Back(Args&& ...args);
+    decltype(auto) Emplace_Back(Args&& ...args); // decltype(auto) - не отбрасывает ссылки и возвращает lvalue, иначе rvalue
     void Pop_Back();
     reference At(size_type index);
     const_reference At(size_type index) const;
@@ -257,11 +257,11 @@ Custom_Vector<T>::const_reference Custom_Vector<T>::operator[](size_type index) 
 
 template <class T>
 template <typename ...Args>
-decltype(auto) Custom_Vector<T>::Emplace_Back(Args&& ...args)
+decltype(auto) Custom_Vector<T>::Emplace_Back(Args&& ...args) // decltype(auto) - не отбрасывает ссылки и возвращает lvalue, иначе rvalue
 {
     if (_size == _capacity)
     {
-        _capacity = std::max(_capacity * 2, (size_t)1); // При 0 будет 1 элемент
+        _capacity = std::max(_capacity * 2u, (size_t)1); // При 0 будет 1 элемент
         
         // T* tmp = new T(_capacity * sizeof(T)); Вызвался бы дефолтный конструктор, а хотелось бы хранить пока только выделенную память, чтобы при освобождении памяти не нужно было вызывать деструктор созданного объекта
         

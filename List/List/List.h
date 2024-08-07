@@ -43,9 +43,9 @@ public:
     List& operator=(List&& other) noexcept;
     bool operator==(const List& other);
     template <typename ...Args>
-    decltype(auto) Emplace_Front(Args&& ...args);
+    decltype(auto) Emplace_Front(Args&& ...args); // decltype(auto) - не отбрасывает ссылки и возвращает lvalue, иначе rvalue
     template <typename ...Args>
-    decltype(auto) Emplace_Back(Args&& ...args);
+    decltype(auto) Emplace_Back(Args&& ...args); // decltype(auto) - не отбрасывает ссылки и возвращает lvalue, иначе rvalue
     void Push_Front(const T& value);
     void Push_Front(T&& value);
     void Push_Back(const T& value);
@@ -271,7 +271,7 @@ bool List<T>::operator==(const List& other)
 
 template <class T>
 template <typename ...Args>
-decltype(auto) List<T>::Emplace_Front(Args&& ...args)
+decltype(auto) List<T>::Emplace_Front(Args&& ...args) // decltype(auto) - не отбрасывает ссылки и возвращает lvalue, иначе rvalue
 {
     if (_begin)
     {
@@ -288,7 +288,7 @@ decltype(auto) List<T>::Emplace_Front(Args&& ...args)
 
 template <class T>
 template <typename ...Args>
-decltype(auto) List<T>::Emplace_Back(Args&& ...args)
+decltype(auto) List<T>::Emplace_Back(Args&& ...args) // decltype(auto) - не отбрасывает ссылки и возвращает lvalue, иначе rvalue
 {
     if (_end)
     {
