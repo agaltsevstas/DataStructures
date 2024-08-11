@@ -10,13 +10,13 @@ class Custom_String
 {
     struct big_string
     {
-        std::unique_ptr<char[]> data;
-        size_t capacity;
+        std::unique_ptr<char[]> data; // 8 байт
+        size_t capacity; // 8 байт
     };
     
     struct small_string
     {
-        std::array<char, sizeof(big_string)> data;
+        std::array<char, sizeof(big_string)> data; // 16 байт
     };
     
     static constexpr std::size_t sso = sizeof(big_string);

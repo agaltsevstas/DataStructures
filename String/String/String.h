@@ -9,8 +9,8 @@ class String
     {
         struct big_string
         {
-            char* data;
-            size_t capacity;
+            char* data; // 8 байт
+            size_t capacity; // 8 байт
         } big;
         
         struct small_string

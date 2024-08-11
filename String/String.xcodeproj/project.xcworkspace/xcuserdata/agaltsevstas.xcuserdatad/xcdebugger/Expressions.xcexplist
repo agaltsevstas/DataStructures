@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "Custom_String::Custom_String(char const*, unsigned long):Custom_String.h">
+         <PersistentStrings>
+            <PersistentString
+               value = "sso">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "String::String(char const*, unsigned long):String.h">
+         <PersistentStrings>
+            <PersistentString
+               value = "sso">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
