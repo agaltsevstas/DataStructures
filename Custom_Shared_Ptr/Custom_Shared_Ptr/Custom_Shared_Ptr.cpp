@@ -381,6 +381,8 @@ int main()
     // Constructor, Move, Swap, Reset
     {
          // Custom_Shared_Ptr<void> void_ptr((void*)new int); // Запрет на создание void, конструктор = delete
+        Custom_Shared_Ptr<int> number_null = nullptr;
+        number_null = nullptr;
         int* value = new int(5);
         Custom_Shared_Ptr<int> number(value); // Bad practice: класть в конструктор сырой указатель, возможен двойной delete
         Custom_Shared_Ptr<int> number1(new int(1)); // Good practise: выделять в конструктор динамическую память

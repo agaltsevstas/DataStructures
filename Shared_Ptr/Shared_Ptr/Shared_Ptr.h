@@ -137,7 +137,7 @@ namespace STD
     template <class TClass>
     Shared_Ptr<TClass>::~Shared_Ptr() noexcept
     {
-        if (_ptr)
+        if (_ptr && _controlBlock)
         {
             std::cout << "Destructor: ";
             if (--_controlBlock->_shared_count == 0)
