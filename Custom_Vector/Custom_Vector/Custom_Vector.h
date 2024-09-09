@@ -123,6 +123,7 @@ Custom_Vector<T>::Custom_Vector(size_type count, const T& value)
             while (_size-- < 0)
                 _data[_size].~T();
             operator delete(_data);
+            _data = nullptr;
             throw; // Пробрасываем исключения
         }
     }
@@ -152,6 +153,7 @@ Custom_Vector<T>::Custom_Vector(const std::initializer_list<T>& vector)
             while (_size-- < 0)
                 _data[_size].~T();
             operator delete(_data);
+            _data = nullptr;
             throw; // Пробрасываем исключения
         }
     }
@@ -180,6 +182,7 @@ Custom_Vector<T>::Custom_Vector(const Custom_Vector& other)
             while (_size-- < 0)
                 _data[_size].~T();
             operator delete(_data);
+            _data = nullptr;
             throw; // Пробрасываем исключения
         }
     }
@@ -298,6 +301,7 @@ decltype(auto) Custom_Vector<T>::Emplace_Back(Args&& ...args) // decltype(auto) 
             while (i-- < 0)
                 tmp[i].~T();
             operator delete(tmp);
+            tmp = nullptr;
             throw; // Пробрасываем исключения
         }
     }
@@ -466,6 +470,7 @@ void Custom_Vector<T>::Reserve(size_type capacity)
         while (i-- < 0)
             tmp[i].~T();
         operator delete(tmp);
+        tmp = nullptr;
         throw; // Пробрасываем исключения
     }
 }
@@ -510,6 +515,7 @@ void Custom_Vector<T>::Shrink_To_Fit()
             while (i-- < 0)
                 tmp[i].~T();
             operator delete(tmp);
+            tmp = nullptr;
             throw; // Пробрасываем исключения
         }
     }
@@ -589,6 +595,7 @@ Custom_Vector<T>::iterator Custom_Vector<T>::Emplace(Custom_Vector<T>::const_ite
             while (i-- < 0)
                 tmp[i].~T();
             operator delete(tmp);
+            tmp = nullptr;
             throw; // Пробрасываем исключения
         }
             
@@ -615,6 +622,7 @@ Custom_Vector<T>::iterator Custom_Vector<T>::Emplace(Custom_Vector<T>::const_ite
             while (i-- >= index)
                 tmp[i].~T();
             operator delete(tmp);
+            tmp = nullptr;
             throw; // Пробрасываем исключения
         }
         

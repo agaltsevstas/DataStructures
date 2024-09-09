@@ -39,11 +39,11 @@ template <typename T>
 void Allocator<T>::Deallocate(T* ptr)
 {
     // delete[] ptr // Вызовет деструкторы по всем элементам и потом удалит
-    if (ptr)
-    {
-        operator delete(ptr);
-        ptr = nullptr;
-    }
+    // if (ptr)
+    // {
+        operator delete(ptr); // для указателей, которые nullptr/NULL, delete не приводит к abort/terminate
+        // ptr = nullptr; // локальная переменная, nullptr не запомнится
+    // }
 }
 
 // Вызов конструктора

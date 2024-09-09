@@ -48,6 +48,7 @@ public:
         while (_size-- > 0)
             _allocator.Destructor(_data + _size);
         _allocator.Deallocate(_data);
+        _data = nullptr;
     }
     
     Vector_Base& operator=(Vector_Base&& other) noexcept

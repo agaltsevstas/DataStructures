@@ -15,11 +15,11 @@ namespace STD
     {
         void operator()(T* ptr)
         {
-            if (ptr)
-            {
-                delete ptr;
-                ptr = nullptr;
-            }
+            // if (ptr)
+            // {
+                delete ptr; // для указателей, которые nullptr/NULL, delete не приводит к abort/terminate.
+                // ptr = nullptr; // локальная переменная, nullptr не запомнится
+            // }
         }
     };
 
@@ -28,11 +28,11 @@ namespace STD
     {
         void operator()(T* ptr)
         {
-            if (ptr)
-            {
-                delete[] ptr;
-                ptr = nullptr;
-            }
+            // if (ptr)
+            // {
+                delete[] ptr; // для указателей, которые nullptr/NULL, delete не приводит к abort/terminate.
+                // ptr = nullptr; // локальная переменная, nullptr не запомнится
+            // }
         }
     };
 
