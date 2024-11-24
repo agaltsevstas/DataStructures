@@ -24,7 +24,7 @@ class Vector_Base
     Vector_Base& operator=(const Vector_Base& other) = delete;
     
 public:
-    Vector_Base() noexcept = default;
+    Vector_Base() = default;
     
     explicit Vector_Base(size_t capacity) :
     _allocator(Allocator()),
@@ -72,12 +72,12 @@ public:
         return _data + index;
     }
 
-    const T* operator+(size_t index) const noexcept
+    const T* operator+(size_t index) const
     {
         return const_cast<Vector_Base&>(*this) + index;
     }
     
-    T& operator[](size_t index) noexcept 
+    T& operator[](size_t index)
     {
         if (index > _capacity)
             throw std::out_of_range("Index is out of range!");
@@ -85,7 +85,7 @@ public:
         return _data[index];
     }
 
-    const T& operator[](size_t index) const noexcept 
+    const T& operator[](size_t index) const
     {
         return const_cast<Vector_Base&>(*this)[index];
     }
@@ -131,8 +131,8 @@ class Vector : private Vector_Base<T>
 public:
     Vector() = default;
     ~Vector() = default;
-    explicit Vector(size_type count, const value_type& value = value_type()) noexcept; // Вызовется на +1 больше конструктор по умолчанию!!! Обычно это выносится в отдельный конструктор
-    Vector(const std::initializer_list<T>& vector) noexcept;
+    explicit Vector(size_type count, const value_type& value = value_type()); // Вызовется на +1 больше конструктор по умолчанию!!! Обычно это выносится в отдельный конструктор
+    Vector(const std::initializer_list<T>& vector);
     Vector(const Vector& other);
     Vector(Vector&& other) noexcept;
     Vector& operator=(const Vector& other);
@@ -159,11 +159,11 @@ public:
     void Resize(size_type size);
     size_type Capacity() const noexcept;
     void Reserve(size_type capacity);
-    void Shrink_To_Fit() noexcept;
-    iterator Data() noexcept;
-    const_iterator Data() const noexcept;
-    void Fill(const value_type& value) noexcept;
-    void Clear() noexcept;
+    void Shrink_To_Fit();
+    iterator Data();
+    const_iterator Data() const;
+    void Fill(const value_type& value);
+    void Clear();
     
     template <typename ...Args>
     iterator Emplace(const_iterator it, Args&& ...args);
@@ -171,15 +171,15 @@ public:
     iterator Erase(const_iterator it);
     iterator Erase(const_iterator begin, const_iterator end);
     
-    iterator Begin() noexcept;
+    iterator Begin();
     iterator End() noexcept;
     const_iterator Begin() const noexcept;
     const_iterator End() const noexcept;
     const_iterator CBegin() const noexcept;
     const_iterator CEnd() const noexcept;
     
-    reverse_iterator RBegin() noexcept;
-    reverse_iterator REnd() noexcept;
+    reverse_iterator RBegin();
+    reverse_iterator REnd();
     const_reverse_iterator CRBegin() const noexcept;
     const_reverse_iterator CREnd() const noexcept;
     
@@ -204,7 +204,7 @@ void Vector<T>::Destroy()
 }
 
 template <class T>
-Vector<T>::Vector(size_type count, const T& value) noexcept:
+Vector<T>::Vector(size_type count, const T& value):
 Vector_Base<T>(count)
 {
     for (size_type i = 0; i < count; ++i)
@@ -215,7 +215,7 @@ Vector_Base<T>(count)
 }
 
 template <class T>
-Vector<T>::Vector(const std::initializer_list<T>& vector) noexcept : 
+Vector<T>::Vector(const std::initializer_list<T>& vector):
 Vector_Base<T>(vector.size())
 {
     for (const auto &elem : vector)
@@ -496,7 +496,7 @@ void Vector<T>::Reserve(size_type capacity)
 }
 
 template <class T>
-void Vector<T>::Shrink_To_Fit() noexcept
+void Vector<T>::Shrink_To_Fit()
 {
     if (_capacity > _size)
     {
@@ -543,26 +543,26 @@ void Vector<T>::Shrink_To_Fit() noexcept
 }
 
 template <class T>
-Vector<T>::iterator Vector<T>::Data() noexcept
+Vector<T>::iterator Vector<T>::Data()
 {
     return _data;
 }
 
 template <class T>
-Vector<T>::const_iterator Vector<T>::Data() const noexcept
+Vector<T>::const_iterator Vector<T>::Data() const
 {
     return _data;
 }
 
 template <class T>
-void Vector<T>::Fill(const value_type& value) noexcept
+void Vector<T>::Fill(const value_type& value)
 {
     for (size_type i = 0; i < _size; ++i)
         _data[i] = value;
 }
 
 template <class T>
-void Vector<T>::Clear() noexcept
+void Vector<T>::Clear()
 {
     Destroy();
 }
@@ -708,7 +708,7 @@ Vector<T>::iterator Vector<T>::Erase(Vector<T>::const_iterator begin, Vector<T>:
 }
 
 template <class T>
-Vector<T>::iterator Vector<T>::Begin() noexcept
+Vector<T>::iterator Vector<T>::Begin()
 {
     return iterator(_data);
 };
@@ -744,13 +744,13 @@ Vector<T>::const_iterator Vector<T>::CEnd() const noexcept
 };
 
 template <class T>
-Vector<T>::reverse_iterator Vector<T>::RBegin() noexcept
+Vector<T>::reverse_iterator Vector<T>::RBegin()
 {
     return reverse_iterator(&_data[0] + _size - 1);
 }
 
 template <class T>
-Vector<T>::reverse_iterator Vector<T>::REnd() noexcept
+Vector<T>::reverse_iterator Vector<T>::REnd()
 {
     return reverse_iterator(&_data[0] - 1);
 }

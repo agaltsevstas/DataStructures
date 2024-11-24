@@ -102,13 +102,13 @@ public:
     Unordered_Map() = default;
     ~Unordered_Map() = default;
     
-    Unordered_Map(const std::initializer_list<value_type>& map) noexcept;
+    Unordered_Map(const std::initializer_list<value_type>& map);
     Unordered_Map(const Unordered_Map& other);
     Unordered_Map(Unordered_Map&& other) noexcept;
     Unordered_Map& operator=(const Unordered_Map& other);
     Unordered_Map& operator=(Unordered_Map&& other) noexcept;
-    bool operator==(const Unordered_Map& other) const noexcept;
-    bool operator!=(const Unordered_Map& other) const noexcept;
+    bool operator==(const Unordered_Map& other) const;
+    bool operator!=(const Unordered_Map& other) const;
     // Менее эффективно - создается значение по умолчанию, а потом происходит присвоение
     Value& operator[](const Key& key);
     // Создает ключ со значением по умолчанию
@@ -123,11 +123,11 @@ public:
     // TODO: кладет рядом с итератором, если bucket не сильно отличаются, время стремится -> Time: O(1)
     std::pair<Iterator, bool> Insert(Const_Iterator it, const_value_type& element);
     // (Time: O(1))
-    Iterator Find(const Key& key) const noexcept;
+    Iterator Find(const Key& key) const;
     // (Time: O(1))
-    size_type Count(const Key& key) const noexcept;
+    size_type Count(const Key& key) const;
     // (Time: O(1))
-    bool Contains(const Key& key) const noexcept;
+    bool Contains(const Key& key) const;
     // (Time: O(1))
     Iterator Erase(const Key& key);
     // (Time: O(1))
@@ -140,28 +140,28 @@ public:
     void Swap(Unordered_Map& other) noexcept;
     
     // list_size / buckets_size (vector_size). При load_factor происходит rehash
-    float Load_Factor() const noexcept;
+    float Load_Factor() const;
     /*
      Порог, который можно установить вручную (по-умолчанию 1.0). Это максимально допустимое соотношение между числом элементов и количеством корзин (count/buckets). Если при вставке очередного элемента среднее число элементов в корзинах превышает этот порог, число корзин (buckets) увеличивается и происходит рехеширование. Если заранее известно количество ключей, то можно сделать reserve и избежать лишних рехеширований при вставках.
      */
-    float Max_Load_Factor() const noexcept;
-    void Max_Load_Factor(float max_factor) noexcept;
+    float Max_Load_Factor() const;
+    void Max_Load_Factor(float max_factor);
     // hash % buckets - вычисление принадлежности хэш-значения к бакету
     size_type Bucket(const Key& key) const;
     // vector_index_size - кол-во элементов в списке в рамках одного bucket
     size_type Bucket_Size(size_type index) const;
     // vector_size - кол-во buckets
-    size_type Buckets_Count() const noexcept;
+    size_type Buckets_Count() const;
     bool Empty() const noexcept;
     size_type Size() const noexcept;
-    void Clear() noexcept;
+    void Clear();
     
-    Iterator Begin() noexcept;
-    Iterator End() noexcept;
-    Const_Iterator Begin() const noexcept;
-    Const_Iterator End() const noexcept;
-    Const_Iterator CBegin() const noexcept;
-    Const_Iterator CEnd() const noexcept;
+    Iterator Begin();
+    Iterator End();
+    Const_Iterator Begin() const;
+    Const_Iterator End() const;
+    Const_Iterator CBegin() const;
+    Const_Iterator CEnd() const;
     
 private:
     buckets_t _buckets;
@@ -282,7 +282,7 @@ private:
 
 
 template <class Key, class Value, class Hash, class Equal>
-Unordered_Map<Key, Value, Hash, Equal>::Unordered_Map(const std::initializer_list<value_type>& map) noexcept
+Unordered_Map<Key, Value, Hash, Equal>::Unordered_Map(const std::initializer_list<value_type>& map)
 {
     Rehash(map.size());
     for (const auto &elem : map)
@@ -336,7 +336,7 @@ Unordered_Map<Key, Value, Hash, Equal>& Unordered_Map<Key, Value, Hash, Equal>::
 }
 
 template <class Key, class Value, class Hash, class Equal>
-bool Unordered_Map<Key, Value, Hash, Equal>::operator==(const Unordered_Map& other) const noexcept
+bool Unordered_Map<Key, Value, Hash, Equal>::operator==(const Unordered_Map& other) const
 {
     if (this == &other) // object = object
         return true;
@@ -348,7 +348,7 @@ bool Unordered_Map<Key, Value, Hash, Equal>::operator==(const Unordered_Map& oth
 }
 
 template <class Key, class Value, class Hash, class Equal>
-bool Unordered_Map<Key, Value, Hash, Equal>::operator!=(const Unordered_Map& other) const noexcept
+bool Unordered_Map<Key, Value, Hash, Equal>::operator!=(const Unordered_Map& other) const
 {
     return !(*this == other);
 }
@@ -438,7 +438,7 @@ std::pair<typename Unordered_Map<Key, Value, Hash, Equal>::Iterator, bool> Unord
 
 // (Time: O(1))
 template <class Key, class Value, class Hash, class Equal>
-Unordered_Map<Key, Value, Hash, Equal>::Iterator Unordered_Map<Key, Value, Hash, Equal>::Find(const Key& key) const noexcept
+Unordered_Map<Key, Value, Hash, Equal>::Iterator Unordered_Map<Key, Value, Hash, Equal>::Find(const Key& key) const
 {
     size_type bucket = Bucket(key);
     if (bucket < _buckets.size())
@@ -460,14 +460,14 @@ Unordered_Map<Key, Value, Hash, Equal>::Iterator Unordered_Map<Key, Value, Hash,
 
 // (Time: O(1))
 template <class Key, class Value, class Hash, class Equal>
-Unordered_Map<Key, Value, Hash, Equal>::size_type Unordered_Map<Key, Value, Hash, Equal>::Count(const Key& key) const noexcept
+Unordered_Map<Key, Value, Hash, Equal>::size_type Unordered_Map<Key, Value, Hash, Equal>::Count(const Key& key) const
 {
     return Find(key) != Iterator() ? 1u : 0u;
 }
 
 // (Time: O(1))
 template <class Key, class Value, class Hash, class Equal>
-bool Unordered_Map<Key, Value, Hash, Equal>::Contains(const Key& key) const noexcept
+bool Unordered_Map<Key, Value, Hash, Equal>::Contains(const Key& key) const
 {
     return Find(key) != Iterator();
 }
@@ -560,7 +560,7 @@ void Unordered_Map<Key, Value, Hash, Equal>::Swap(Unordered_Map& other) noexcept
 
 // list_size / buckets_size (vector_size). При load_factor происходит rehash
 template <class Key, class Value, class Hash, class Equal>
-float Unordered_Map<Key, Value, Hash, Equal>::Load_Factor() const noexcept
+float Unordered_Map<Key, Value, Hash, Equal>::Load_Factor() const
 {
     if (_buckets.empty())
         return 1.0f;
@@ -572,13 +572,13 @@ float Unordered_Map<Key, Value, Hash, Equal>::Load_Factor() const noexcept
  Порог, который можно установить вручную (по-умолчанию 1.0). Это максимально допустимое соотношение между числом элементов и количеством корзин (count/buckets). Если при вставке очередного элемента среднее число элементов в корзинах превышает этот порог, число корзин (buckets) увеличивается и происходит рехеширование. Если заранее известно количество ключей, то можно сделать reserve и избежать лишних рехеширований при вставках.
  */
 template <class Key, class Value, class Hash, class Equal>
-float Unordered_Map<Key, Value, Hash, Equal>::Max_Load_Factor() const noexcept
+float Unordered_Map<Key, Value, Hash, Equal>::Max_Load_Factor() const
 {
     return _max_factor;
 }
 
 template <class Key, class Value, class Hash, class Equal>
-void Unordered_Map<Key, Value, Hash, Equal>::Max_Load_Factor(float max_factor) noexcept
+void Unordered_Map<Key, Value, Hash, Equal>::Max_Load_Factor(float max_factor)
 {
     _max_factor = max_factor;
 }
@@ -613,7 +613,7 @@ size_t Unordered_Map<Key, Value, Hash, Equal>::Bucket_Size(size_type index) cons
 
 // vector_size - кол-во buckets
 template <class Key, class Value, class Hash, class Equal>
-size_t Unordered_Map<Key, Value, Hash, Equal>::Buckets_Count() const noexcept
+size_t Unordered_Map<Key, Value, Hash, Equal>::Buckets_Count() const
 {
     return _buckets.size();
 }
@@ -631,7 +631,7 @@ Unordered_Map<Key, Value, Hash, Equal>::size_type Unordered_Map<Key, Value, Hash
 }
 
 template <class Key, class Value, class Hash, class Equal>
-void Unordered_Map<Key, Value, Hash, Equal>::Clear() noexcept
+void Unordered_Map<Key, Value, Hash, Equal>::Clear()
 {
     _buckets.clear();
     _list.clear();
@@ -640,41 +640,41 @@ void Unordered_Map<Key, Value, Hash, Equal>::Clear() noexcept
 }
 
 template <class Key, class Value, class Hash, class Equal>
-Unordered_Map<Key, Value, Hash, Equal>::Iterator Unordered_Map<Key, Value, Hash, Equal>::Begin() noexcept
+Unordered_Map<Key, Value, Hash, Equal>::Iterator Unordered_Map<Key, Value, Hash, Equal>::Begin()
 {
     return Iterator(_list.begin());
 }
 
 template <class Key, class Value, class Hash, class Equal>
-Unordered_Map<Key, Value, Hash, Equal>::Iterator Unordered_Map<Key, Value, Hash, Equal>::End() noexcept
+Unordered_Map<Key, Value, Hash, Equal>::Iterator Unordered_Map<Key, Value, Hash, Equal>::End()
 {
     return Iterator(_list.end());
 }
 
 // Обход ошибки: C2373	Map<Key, Value, Compare>::Begin: переопределение
 template <class Key, class Value, class Hash, class Equal>
-auto Unordered_Map<Key, Value, Hash, Equal>::Begin() const noexcept -> Unordered_Map<Key, Value, Hash, Equal>::Const_Iterator
+auto Unordered_Map<Key, Value, Hash, Equal>::Begin() const -> Unordered_Map<Key, Value, Hash, Equal>::Const_Iterator
 {
     return Iterator(_list.cbegin());
 }
 
 // Обход ошибки: C2373	Map<Key, Value, Compare>::End: переопределение
 template <class Key, class Value, class Hash, class Equal>
-auto Unordered_Map<Key, Value, Hash, Equal>::End() const noexcept -> Unordered_Map<Key, Value, Hash, Equal>::Const_Iterator
+auto Unordered_Map<Key, Value, Hash, Equal>::End() const -> Unordered_Map<Key, Value, Hash, Equal>::Const_Iterator
 {
     return Iterator(_list.crend());
 }
 
 // Обход ошибки: C2373	Map<Key, Value, Compare>::CBegin: переопределение
 template <class Key, class Value, class Hash, class Equal>
-auto Unordered_Map<Key, Value, Hash, Equal>::CBegin() const noexcept -> Unordered_Map<Key, Value, Hash, Equal>::Const_Iterator
+auto Unordered_Map<Key, Value, Hash, Equal>::CBegin() const -> Unordered_Map<Key, Value, Hash, Equal>::Const_Iterator
 {
     return Begin();
 }
 
 // Обход ошибки: C2373	Map<Key, Value, Compare>::CEnd: переопределение
 template <class Key, class Value, class Hash, class Equal>
-auto Unordered_Map<Key, Value, Hash, Equal>::CEnd() const noexcept -> Unordered_Map<Key, Value, Hash, Equal>::Const_Iterator
+auto Unordered_Map<Key, Value, Hash, Equal>::CEnd() const -> Unordered_Map<Key, Value, Hash, Equal>::Const_Iterator
 {
     return End();
 }

@@ -7,6 +7,9 @@ template <class TMutex>
 class Unique_lock
 {
     Unique_lock(const Unique_lock&) = delete;
+    Unique_lock(Unique_lock&&) noexcept = delete;
+    Unique_lock& operator=(const Unique_lock&) = delete;
+    Unique_lock& operator=(Unique_lock&&) noexcept = delete;
     
 public:
     explicit Unique_lock(TMutex& iMutex) : _mutex(iMutex)

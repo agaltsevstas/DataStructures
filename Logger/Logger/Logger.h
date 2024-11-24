@@ -50,7 +50,7 @@ public:
      * @TODO: Установление уровня подробности лога
      * @param iLogLevel - Уровень лога
      */
-    static void SetDebugLevel(LogLevel iLogLevel) noexcept;
+    static void SetDebugLevel(LogLevel iLogLevel);
     
     /*!
      * @details Производный класс от класссов стандартной библиотеки.
@@ -153,27 +153,27 @@ public:
      * @brief Запись в файл
      * @param iMessage - Записываемое сообщение
      */
-    void WriteToFile(const std::string& iMessage) noexcept;
+    void WriteToFile(const std::string& iMessage);
     
     /*!
      * @brief Вывод информационных сообщений на экран
      */
-    static void PrintInfo() noexcept;
+    static void PrintInfo();
     
     /*!
      * @brief Вывод предупреждений на экран
      */
-    static void PrintWarning() noexcept;
+    static void PrintWarning();
     
     /*!
      * @brief Вывод ошибок на экран
      */
-    static void PrintError() noexcept;
+    static void PrintError();
     
     /*!
      * @brief Вывод всех сообщений (информационные сообщений, предупреждения, ошибки) на экран
      */
-    static void PrintAllMessages() noexcept;
+    static void PrintAllMessages();
     
 private:
     inline static std::string _infoBuffer;        /// Буфер для хранения информационных сообщений

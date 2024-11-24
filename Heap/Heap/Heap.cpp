@@ -20,31 +20,31 @@ private:
     using index = int;
     
 public:
-    heap() noexcept = default;
+    heap() = default;
     
     heap(const std::initializer_list<Type>& array) : Vector(array)
     {
         heapify();
     }
     
-    Type& top() noexcept
+    Type& top()
     {
         return Vector::front();
     }
 
-    void pop() noexcept
+    void pop()
     {
         Vector::pop_back();
     }
     
-    void popTop() noexcept
+    void popTop()
     {
         std::swap(top(), Vector::back());
         pop();
         shift_down();
     }
     
-    void push(const Type& value) noexcept
+    void push(const Type& value)
     {
         Vector::push_back(value);
         index last = (int)Vector::size() - 1;

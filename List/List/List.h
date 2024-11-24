@@ -19,7 +19,7 @@ class List
     {
         Node() = default;
         template <typename ...Args>
-        Node(Node* iPrev, Node* iNext, Args&& ...args) noexcept :
+        Node(Node* iPrev, Node* iNext, Args&& ...args):
         prev(iPrev),
         next(iNext),
         value(std::forward<Args>(args)...)
@@ -59,11 +59,11 @@ public:
     void Swap(List& other) noexcept;
     bool Empty() const noexcept;
     size_t Size() const noexcept;
-    void Reverse() noexcept;
-    void Clear() noexcept;
+    void Reverse();
+    void Clear();
     
-    Iterator Begin() noexcept;
-    Iterator End() noexcept;
+    Iterator Begin();
+    Iterator End();
     Const_Iterator Begin() const noexcept;
     Const_Iterator End() const noexcept;
     Const_Iterator CBegin() const noexcept;
@@ -447,7 +447,7 @@ size_t List<T>::Size() const noexcept
 }
 
 template <class T>
-void List<T>::Reverse() noexcept
+void List<T>::Reverse()
 {
     auto tmpEnd = _end;
     while (_begin != _end)
@@ -460,7 +460,7 @@ void List<T>::Reverse() noexcept
 }
 
 template <class T>
-void List<T>::Clear() noexcept
+void List<T>::Clear()
 {
     while (_begin)
     {
@@ -475,14 +475,14 @@ void List<T>::Clear() noexcept
 }
 
 template <class T>
-List<T>::Iterator List<T>::Begin() noexcept
+List<T>::Iterator List<T>::Begin()
 {
     return Iterator(*this, _begin);
 };
 
 /// TODO
 template <class T>
-List<T>::Iterator List<T>::End() noexcept
+List<T>::Iterator List<T>::End()
 {
     return _end ? Iterator(*this, _end->next) : Iterator(*this, nullptr); // return nullptr!!!
 };

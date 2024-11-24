@@ -38,7 +38,7 @@ void Logger::Instance()
     }
 }
 
-void Logger::SetDebugLevel(LogLevel iLogLevel) noexcept
+void Logger::SetDebugLevel(LogLevel iLogLevel)
 {
     _logLevel = iLogLevel;
 }
@@ -146,27 +146,27 @@ void Logger::WriteToBuffer(const std::string& message, LogLevel iLogLevel)
     }
 }
 
-void Logger::WriteToFile(const std::string& iMessage) noexcept
+void Logger::WriteToFile(const std::string& iMessage)
 {
     _logFile << iMessage << std::flush; // Принудительный сброс буфера
 }
 
-void Logger::PrintInfo() noexcept
+void Logger::PrintInfo()
 {
     _infoBuffer.empty() ? std::cout << "Cообщения отсутствуют" << std::endl : std::cout << _infoBuffer;
 }
 
-void Logger::PrintWarning() noexcept
+void Logger::PrintWarning()
 {
     _warningBuffer.empty() ? std::cout << "Предупреждения отсутствуют" << std::endl : std::cout << _warningBuffer;
 }
 
-void Logger::PrintError() noexcept
+void Logger::PrintError()
 {
     _errorBuffer.empty() ? std::cout << "Ошибки отсутствуют" << std::endl : std::cout << _errorBuffer;
 }
 
-void Logger::PrintAllMessages() noexcept
+void Logger::PrintAllMessages()
 {
     std::cout << _allMessagesBuffer << std::endl;
 }

@@ -9,7 +9,7 @@ namespace linked_list
         struct Node
         {
             template <typename ...Args>
-            Node(Args&& ...args) noexcept :
+            Node(Args&& ...args) :
             value(std::forward<Args>(args)...)
             {
                 
@@ -37,8 +37,8 @@ namespace linked_list
         const T& Back() const;
         void Pop();
         void Swap(Queue& other) noexcept;
-        bool Empty() const noexcept;
-        size_t Size() const noexcept;
+        bool Empty() const;
+        size_t Size() const;
         
     private:
         void Clear()
@@ -230,13 +230,13 @@ namespace linked_list
     }
 
     template <class T>
-    bool Queue<T>::Empty() const noexcept
+    bool Queue<T>::Empty() const
     {
         return Size() == 0;
     }
 
     template <class T>
-    size_t Queue<T>::Size() const noexcept
+    size_t Queue<T>::Size() const
     {
         return _size;
     }

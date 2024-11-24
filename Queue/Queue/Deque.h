@@ -9,12 +9,11 @@ namespace DEQUE
     template<typename T, class Container = std::deque<T>> // vector, list or deque
     class Queue
     {
-
     public:
         Queue() = default;
         ~Queue() = default;
         
-        Queue(const Queue& other) noexcept
+        Queue(const Queue& other)
         {
             *this = other;
         }
@@ -24,7 +23,7 @@ namespace DEQUE
             *this = std::move(other);
         }
         
-        Queue& operator=(const Queue& other) noexcept
+        Queue& operator=(const Queue& other)
         {
             if (this == &other)
                 return *this;
@@ -87,12 +86,12 @@ namespace DEQUE
             std::swap(_container, other._container);
         }
         
-        bool Empty() const noexcept
+        bool Empty() const
         {
             return _container.empty();
         }
         
-        size_t Size() const noexcept
+        size_t Size() const
         {
             return _container.size();
         }

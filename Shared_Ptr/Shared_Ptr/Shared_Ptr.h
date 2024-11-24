@@ -55,13 +55,13 @@ namespace STD
         Shared_Ptr() noexcept;
         Shared_Ptr(decltype(nullptr)) noexcept;
         template <typename Deleter = Default_Deleter<element_type>>
-        explicit Shared_Ptr(element_type* iObject, Deleter deleter = Deleter()) noexcept;
+        explicit Shared_Ptr(element_type* iObject, Deleter deleter = Deleter());
         /// Конструктор копирования
         Shared_Ptr(const Shared_Ptr& other);
         /// Конструктор перемещеиня
         Shared_Ptr(Shared_Ptr&& other) noexcept;
         /// Деструктор
-        ~Shared_Ptr() noexcept;
+        ~Shared_Ptr();
         /// Оператор копирования
         Shared_Ptr& operator=(const Shared_Ptr& other);
         /// Оператор перемещения
@@ -109,7 +109,7 @@ namespace STD
 
     template <class TClass>
     template <typename Deleter>
-    Shared_Ptr<TClass>::Shared_Ptr(element_type* ptr, Deleter deleter) noexcept :
+    Shared_Ptr<TClass>::Shared_Ptr(element_type* ptr, Deleter deleter) :
     _ptr(ptr),
     _controlBlock(ptr ? new ControlBlock() : nullptr),
     _deleter(deleter)
@@ -135,7 +135,7 @@ namespace STD
 
     /// Деструктор
     template <class TClass>
-    Shared_Ptr<TClass>::~Shared_Ptr() noexcept
+    Shared_Ptr<TClass>::~Shared_Ptr()
     {
         if (_ptr && _controlBlock)
         {

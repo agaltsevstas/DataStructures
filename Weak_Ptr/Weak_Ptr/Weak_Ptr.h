@@ -36,17 +36,17 @@ namespace STD
         /// Деструктор
         ~Weak_Ptr() noexcept;
         /// Оператор копирования для Shared_Ptr
-        Weak_Ptr& operator=(const Shared_Ptr<TClass>& shared_ptr);
+        Weak_Ptr& operator=(const Shared_Ptr<TClass>& shared_ptr) noexcept;
         /// Оператор копирования
-        Weak_Ptr& operator=(const Weak_Ptr& other);
+        Weak_Ptr& operator=(const Weak_Ptr& other) noexcept;
         /// Оператор перемещения
         Weak_Ptr& operator=(Weak_Ptr&& other) noexcept;
         //auto operator<=>(const Weak_Ptr&) const = default; // сравнение по-умолчанию
         bool operator==(const Weak_Ptr& other); // Особый случай
-        void Swap(Weak_Ptr& other);
+        void Swap(Weak_Ptr& other) noexcept;
         [[nodiscard("Use_Count")]] uint64_t Use_Count() const noexcept;
         bool Expired() const noexcept;
-        Shared_Ptr<TClass> Lock() const;
+        Shared_Ptr<TClass> Lock() const noexcept;
         // Reset - менее безопасный чем Make_Shared
         void Reset();
 
@@ -123,7 +123,7 @@ namespace STD
 
     /// Оператор копирования для Shared_Ptr
     template <class TClass>
-    Weak_Ptr<TClass>& Weak_Ptr<TClass>::operator=(const Shared_Ptr<TClass>& shared_ptr)
+    Weak_Ptr<TClass>& Weak_Ptr<TClass>::operator=(const Shared_Ptr<TClass>& shared_ptr) noexcept
     {
         if (_ptr == shared_ptr._ptr)
         {
@@ -154,7 +154,7 @@ namespace STD
 
     /// Оператор копирования
     template <class TClass>
-    Weak_Ptr<TClass>& Weak_Ptr<TClass>::operator=(const Weak_Ptr& other)
+    Weak_Ptr<TClass>& Weak_Ptr<TClass>::operator=(const Weak_Ptr& other) noexcept
     {
         if (this == &other) // object = object
             return *this;
@@ -214,7 +214,7 @@ namespace STD
     }
 
     template <class TClass>
-    void Weak_Ptr<TClass>::Swap(Weak_Ptr& other)
+    void Weak_Ptr<TClass>::Swap(Weak_Ptr& other) noexcept
     {
         if (this == &other) // object.Swap(object)
             return;
@@ -236,7 +236,7 @@ namespace STD
     }
 
     template <class TClass>
-    Shared_Ptr<TClass> Weak_Ptr<TClass>::Lock() const
+    Shared_Ptr<TClass> Weak_Ptr<TClass>::Lock() const noexcept
     {
         if (!_controlBlock)
             return nullptr;

@@ -42,13 +42,14 @@ namespace custom
     class Spinlock
     {
         Spinlock(const Spinlock&) = delete;
-        Spinlock &operator = (const Spinlock&) = delete;
-        
+        Spinlock(Spinlock&&) noexcept = delete;
+        Spinlock& operator=(const Spinlock&) = delete;
+        Spinlock& operator=(Spinlock&&) noexcept = delete;
     public:
         Spinlock() = default;
         ~Spinlock() = default;
         
-        void Lock() noexcept
+        void Lock()
         {
             // LOAD (no) ↑ STORE (no)
             if (_flag)
@@ -67,7 +68,7 @@ namespace custom
             }
         }
         
-        bool Try_lock() noexcept
+        bool Try_lock()
         {
             auto lock = _flag.load();
             if (!lock)
@@ -76,7 +77,7 @@ namespace custom
             return !lock;
         }
         
-        void Unlock() noexcept
+        void Unlock()
         {
             if (_thread_id == std::this_thread::get_id())
             {
@@ -99,12 +100,14 @@ namespace cv
     class Spinlock
     {
         Spinlock(const Spinlock&) = delete;
-        
+        Spinlock(Spinlock&&) noexcept = delete;
+        Spinlock& operator=(const Spinlock&) = delete;
+        Spinlock& operator=(Spinlock&&) noexcept = delete;
     public:
         Spinlock() = default;
         ~Spinlock() = default;
         
-        void Lock() noexcept
+        void Lock()
         {
             std::unique_lock lock(_mutex);
             // LOAD (no) ↑ STORE (no)
@@ -112,14 +115,14 @@ namespace cv
             // LOAD (no) ↓ STORE (no)
         }
         
-        bool Try_lock() noexcept
+        bool Try_lock()
         {
             // LOAD (no) ↑ STORE (no)
             return !_flag.exchange(true); // замена значения и возвращение старого значения
             // LOAD (no) ↓ STORE (no)
         }
         
-        void Unlock() noexcept
+        void Unlock()
         {
             _cv.notify_one();
             // LOAD (no) ↑ STORE (no)
@@ -142,7 +145,14 @@ namespace atomic
     {
         class Spinlock
         {
+            Spinlock(const Spinlock&) = delete;
+            Spinlock(Spinlock&&) noexcept = delete;
+            Spinlock& operator=(const Spinlock&) = delete;
+            Spinlock& operator=(Spinlock&&) noexcept = delete;
         public:
+            Spinlock() = default;
+            ~Spinlock() = default;
+
             void Lock()
             {
                 bool expected = false;
@@ -177,12 +187,14 @@ namespace atomic
         class Spinlock
         {
             Spinlock(const Spinlock&) = delete;
-            
+            Spinlock(Spinlock&&) noexcept = delete;
+            Spinlock& operator=(const Spinlock&) = delete;
+            Spinlock& operator=(Spinlock&&) noexcept = delete;
         public:
             Spinlock() = default;
             ~Spinlock() = default;
             
-            void Lock() noexcept
+            void Lock()
             {
                 // LOAD (no) ↑ STORE (no)
                 while(_flag);
@@ -195,7 +207,7 @@ namespace atomic
                 // LOAD (no) ↓ STORE (no)
             }
             
-            bool Try_lock() noexcept
+            bool Try_lock()
             {
                 bool expected = false;
                 
@@ -204,7 +216,7 @@ namespace atomic
                 // LOAD (no) ↓ STORE (no)
             }
             
-            void Unlock() noexcept
+            void Unlock()
             {
                 // LOAD (no) ↑ STORE (no)
                 _flag = false;
@@ -224,12 +236,15 @@ namespace atomic_flag
     class Spinlock11
     {
         Spinlock11(const Spinlock11&) = delete;
+        Spinlock11(Spinlock11&&) noexcept = delete;
+        Spinlock11& operator=(const Spinlock11&) = delete;
+        Spinlock11& operator=(Spinlock11&&) noexcept = delete;
         
     public:
         Spinlock11() = default;
         ~Spinlock11() = default;
         
-        void Lock() noexcept
+        void Lock()
         {
             // LOAD (no) ↑ STORE (no)
             while (_flag.test_and_set()) // устанавливает значение true и возвращает предыдущее значение
@@ -239,14 +254,14 @@ namespace atomic_flag
             }
         }
         
-        bool Try_lock() noexcept
+        bool Try_lock()
         {
             // LOAD (no) ↑ STORE (no)
             return !_flag.test_and_set(); // устанавливает значение true и возвращает предыдущее значение
             // LOAD (no) ↓ STORE (no)
         }
         
-        void Unlock() noexcept
+        void Unlock()
         {
             // LOAD (no) ↑ STORE (no)
             _flag.clear(); // сбрасывает значение в false
@@ -264,12 +279,15 @@ namespace atomic_flag
     class Spinlock20
     {
         Spinlock20(const Spinlock20&) = delete;
+        Spinlock20(Spinlock20&&) noexcept = delete;
+        Spinlock20& operator=(const Spinlock20&) = delete;
+        Spinlock20& operator=(Spinlock20&&) noexcept = delete;
         
     public:
         Spinlock20() = default;
         ~Spinlock20() = default;
         
-        void Lock() noexcept
+        void Lock()
         {
             // LOAD (no) ↑ STORE (no)
             if (_flag.test_and_set(std::memory_order_acquire)) // устанавливает значение true и возвращает предыдущее значение
@@ -281,14 +299,14 @@ namespace atomic_flag
             }
         }
         
-        bool Try_lock() noexcept
+        bool Try_lock()
         {
             // LOAD (no) ↑ STORE (no)
             return !_flag.test_and_set(std::memory_order_acquire); // устанавливает значение true и возвращает предыдущее значение
             // LOAD (no) ↓ STORE (yes)
         }
         
-        void Unlock() noexcept
+        void Unlock()
         {
             // LOAD (yes) ↑ STORE (no)
             _flag.clear(std::memory_order_release); // сбрасывает значение в false

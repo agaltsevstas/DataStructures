@@ -18,7 +18,7 @@ class LinkedList
     struct Node
     {
         template <typename ...Args>
-        Node(Node* iNext, Args&& ...args) noexcept :
+        Node(Node* iNext, Args&& ...args) :
         next(iNext),
         value(std::forward<Args>(args)...)
         {
@@ -49,11 +49,11 @@ public:
     void Swap(LinkedList& other) noexcept;
     bool Empty() const noexcept;
     size_t Size() const noexcept;
-    void Reverse() noexcept;
-    void Clear() noexcept;
+    void Reverse();
+    void Clear();
     
-    Iterator Begin() noexcept;
-    Iterator End() noexcept;
+    Iterator Begin();
+    Iterator End();
     Const_Iterator Begin() const noexcept;
     Const_Iterator End() const noexcept;
     Const_Iterator CBegin() const noexcept;
@@ -318,7 +318,7 @@ size_t LinkedList<T>::Size() const noexcept
 }
 
 template <class T>
-void LinkedList<T>::Reverse() noexcept
+void LinkedList<T>::Reverse()
 {
     Node* current = _node;
     Node *prev = NULL, *next = NULL;
@@ -334,7 +334,7 @@ void LinkedList<T>::Reverse() noexcept
 }
 
 template <class T>
-void LinkedList<T>::Clear() noexcept
+void LinkedList<T>::Clear()
 {
     while (_node)
     {
@@ -348,14 +348,14 @@ void LinkedList<T>::Clear() noexcept
 }
 
 template <class T>
-LinkedList<T>::Iterator LinkedList<T>::Begin() noexcept
+LinkedList<T>::Iterator LinkedList<T>::Begin()
 {
     return Iterator(*this, _node);
 };
 
 /// TODO
 template <class T>
-LinkedList<T>::Iterator LinkedList<T>::End() noexcept
+LinkedList<T>::Iterator LinkedList<T>::End()
 {
     return Iterator(*this, nullptr); // return nullptr!!!
 };

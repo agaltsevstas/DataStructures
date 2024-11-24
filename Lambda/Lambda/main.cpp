@@ -144,17 +144,17 @@ int main()
         
         []{}(); // Без списка аргументов
         
-        []() noexcept // Не вызовется, т.к. не добавили вызов после определения
+        []() // Не вызовется, т.к. не добавили вызов после определения
         {
             std::cout << "Безымянная функция" << std::endl;
         };
         
-        []() noexcept // Вызовется, т.к. добавили вызов после определения
+        []() // Вызовется, т.к. добавили вызов после определения
         {
             std::cout << "Безымянная функция" << std::endl;
         }();
         
-        [](int number) noexcept // Вызовется с аргументом, т.к. добавили вызов после определения
+        [](int number) // Вызовется с аргументом, т.к. добавили вызов после определения
         {
             std::cout << "Безымянная функция" << std::endl;
         }(10);
@@ -234,17 +234,17 @@ int main()
             std::cout << ++i << std::endl;
         };
         
-        auto lambda8 = [&str_copy = str]() noexcept // РЕКОМЕНДУЕТСЯ: Инициализация объекта по ссылке в списке захвата
+        auto lambda8 = [&str_copy = str]() // РЕКОМЕНДУЕТСЯ: Инициализация объекта по ссылке в списке захвата
         {
             std::cout << str_copy << std::endl;
         };
         
-        auto lambda9 = [&str = std::as_const(str)]() noexcept // РЕКОМЕНДУЕТСЯ: Инициализация объекта по константной ссылке в списке захвата
+        auto lambda9 = [&str = std::as_const(str)]() // РЕКОМЕНДУЕТСЯ: Инициализация объекта по константной ссылке в списке захвата
         {
             std::cout << str << std::endl;
         };
         
-        auto lambda10 = [str = std::cref(str)]() noexcept // РЕКОМЕНДУЕТСЯ: Инициализация объекта по константной ссылке в списке захвата
+        auto lambda10 = [str = std::cref(str)]() // РЕКОМЕНДУЕТСЯ: Инициализация объекта по константной ссылке в списке захвата
         {
             std::cout << str.get() << std::endl;
         };
@@ -339,7 +339,7 @@ int main()
         {
             /// 1 Способ: обычный
             {
-                auto lambda = []<typename T>(const T& number) noexcept
+                auto lambda = []<typename T>(const T& number)
                 {
                     return number;
                 };
@@ -381,7 +381,7 @@ int main()
     {
         /// 1 Способ: обычный
         {
-            auto sum = [](int lhs, int rhs) noexcept
+            auto sum = [](int lhs, int rhs)
             {
                 return lhs + rhs;
             };
@@ -430,7 +430,7 @@ int main()
      Каррирование ≠ частичное применение функции. Отличие: Каррирование принимает по 1 аргументу, частичное применение функции принимает > 1 аргумента.
      */
     {
-        auto sum = [](int one, int two, int three) noexcept
+        auto sum = [](int one, int two, int three)
         {
             return one + two + three;
         };
@@ -544,7 +544,7 @@ int main()
     /// lambda в качестве компаратора
     {
         std::vector numbers = {1, 4, 3, 2, 5};
-        std::sort(numbers.begin(), numbers.end(), [](const auto& lhs, const auto& rhs) noexcept
+        std::sort(numbers.begin(), numbers.end(), [](const auto& lhs, const auto& rhs)
         {
             return lhs < rhs;
         });

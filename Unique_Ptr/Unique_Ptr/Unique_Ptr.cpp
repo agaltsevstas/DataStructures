@@ -47,21 +47,21 @@ namespace STD
         using element_type = std::remove_extent_t<TClass>; // C++17: Для поддержки использования типа TClass[] - Unique_Ptr<int[]> mass(new int[10]);
         
         /// Конструктор копирования
-        explicit Unique_Ptr(const Unique_Ptr& other) noexcept = delete;
+        explicit Unique_Ptr(const Unique_Ptr& other) = delete;
         /// Оператор копирования
         [[nodiscard]] Unique_Ptr& operator=(const Unique_Ptr& other) = delete;
     public:
         /// Конструктор по-умолчанию
         Unique_Ptr() noexcept;
         Unique_Ptr(decltype(nullptr)) noexcept;
-        explicit Unique_Ptr(element_type* iObject, Deleter deleter = Deleter()) noexcept;
+        explicit Unique_Ptr(element_type* iObject, Deleter deleter = Deleter());
         /// Конструктор перемещеиня
         explicit Unique_Ptr(Unique_Ptr&& other) noexcept;
         /// Деструктор
-        ~Unique_Ptr() noexcept;
+        ~Unique_Ptr();
         /// Оператор перемещения
         Unique_Ptr& operator=(Unique_Ptr&& other) noexcept;
-        Unique_Ptr& operator=(decltype(nullptr));
+        Unique_Ptr& operator=(decltype(nullptr)) noexcept;
         auto operator<=>(const Unique_Ptr&) const = default; // сравнение по-умолчанию
         bool operator==(Unique_Ptr&& other); // Особый случай
         element_type* Get() noexcept;
@@ -93,7 +93,7 @@ namespace STD
     }
 
     template <class TClass, typename Deleter>
-    Unique_Ptr<TClass, Deleter>::Unique_Ptr(element_type* ptr, Deleter deleter) noexcept :
+    Unique_Ptr<TClass, Deleter>::Unique_Ptr(element_type* ptr, Deleter deleter) :
     _ptr(ptr),
     _deleter(deleter)
     {
@@ -116,7 +116,7 @@ namespace STD
 
     /// Деструктор
     template <class TClass, typename Deleter>
-    Unique_Ptr<TClass, Deleter>::~Unique_Ptr() noexcept
+    Unique_Ptr<TClass, Deleter>::~Unique_Ptr()
     {
         std::cout << "Destructor: delete object" << std::endl;
         _deleter(_ptr);
@@ -140,7 +140,7 @@ namespace STD
     }
 
     template <class TClass, typename Deleter>
-    Unique_Ptr<TClass, Deleter>& Unique_Ptr<TClass, Deleter>::operator=(decltype(nullptr))
+    Unique_Ptr<TClass, Deleter>& Unique_Ptr<TClass, Deleter>::operator=(decltype(nullptr)) noexcept
     {
         _deleter(_ptr);
         _ptr = nullptr;

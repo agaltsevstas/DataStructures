@@ -40,7 +40,7 @@ public:
         return tmp;
     }
     
-    T operator*() noexcept
+    T operator*()
     {
         return *_ptr;
     }
@@ -103,7 +103,7 @@ public:
     constexpr size_type Size() const noexcept;
     constexpr iterator Data() noexcept;
     constexpr const_iterator Data() const noexcept;
-    void Fill(const value_type& value) noexcept;
+    void Fill(const value_type& value);
     
     iterator Begin() noexcept;
     iterator End() noexcept;
@@ -278,7 +278,7 @@ constexpr Array<T, N>::const_iterator Array<T, N>::Data() const noexcept
 }
 
 template <class T, size_t N>
-void Array<T, N>::Fill(const value_type& value) noexcept
+void Array<T, N>::Fill(const value_type& value)
 {
     for (size_type i = 0; i < N; ++i)
         _data[i] = value;

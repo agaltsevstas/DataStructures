@@ -5,9 +5,11 @@ template <class TMutex>
 class Lock_guard
 {
     Lock_guard(const Lock_guard&) = delete;
+    Lock_guard(Lock_guard&&) noexcept = delete;
+    Lock_guard& operator=(const Lock_guard&) = delete;
+    Lock_guard& operator=(Lock_guard&&) noexcept = delete;
     
 public:
-    
     explicit Lock_guard(TMutex& iMutex): _mutex(iMutex)
     {
         _mutex.Lock();

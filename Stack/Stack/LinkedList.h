@@ -9,7 +9,7 @@ namespace linked_list
         struct Node
         {
             template <typename ...Args>
-            Node(Node* iPrev, Args&& ...args) noexcept :
+            Node(Node* iPrev, Args&& ...args):
             prev(iPrev),
             value(std::forward<Args>(args)...)
             {

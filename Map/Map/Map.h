@@ -84,8 +84,8 @@ public:
     Map(Map&& other) noexcept;
     Map& operator=(const Map& other);
     Map& operator=(Map&& other) noexcept;
-    bool operator==(const Map& other) const noexcept;
-    bool operator!=(const Map& other) const noexcept;
+    bool operator==(const Map& other) const;
+    bool operator!=(const Map& other) const;
     // Менее эффективно - создается значение по умолчанию, а потом происходит присвоение
     Value& operator[](const Key& key);
     // Создается ключ со значением по умолчанию
@@ -98,28 +98,28 @@ public:
     std::pair<Iterator, bool> Insert(const_value_type& element);
     // TODO: кладет рядом с итератором, если значения не сильно отличаются, время стремится -> Time: O(1)
     std::pair<Iterator, bool> Insert(Const_Iterator it, const_value_type& element);
-    Iterator Find(const Key& key) const noexcept;
-    size_type Count(const Key& key) const noexcept;
-    bool Contains(const Key& key) const noexcept;
+    Iterator Find(const Key& key) const;
+    size_type Count(const Key& key) const;
+    bool Contains(const Key& key) const;
     Iterator Erase(const Key& key);
     Iterator Erase(Const_Iterator it);
     Iterator Erase(Const_Iterator begin, Const_Iterator end);
     
     void Swap(Map& other) noexcept;
-    size_type Depth() const noexcept;
+    size_type Depth() const;
     bool Empty() const noexcept;
     size_type Size() const noexcept;
-    void Clear() noexcept;
+    void Clear();
     
-    Iterator Begin() noexcept;
-    Iterator End() noexcept;
+    Iterator Begin();
+    Iterator End();
     Const_Iterator Begin() const noexcept;
     Const_Iterator End() const noexcept;
     Const_Iterator CBegin() const noexcept;
     Const_Iterator CEnd() const noexcept;
     
-    ReverseIterator RBegin() noexcept;
-    ReverseIterator REnd() noexcept;
+    ReverseIterator RBegin();
+    ReverseIterator REnd();
     Const_ReverseIterator RBegin() const noexcept;
     Const_ReverseIterator REnd() const noexcept;
     Const_ReverseIterator CRBegin() const noexcept;
@@ -470,7 +470,7 @@ Map<Key, Value, Compare>& Map<Key, Value, Compare>::operator=(Map&& other) noexc
 }
 
 template <class Key, class Value, class Compare>
-bool Map<Key, Value, Compare>::operator==(const Map& other) const noexcept
+bool Map<Key, Value, Compare>::operator==(const Map& other) const
 {
     if (this == &other) // object = object
         return true;
@@ -488,7 +488,7 @@ bool Map<Key, Value, Compare>::operator==(const Map& other) const noexcept
 }
 
 template <class Key, class Value, class Compare>
-bool Map<Key, Value, Compare>::operator!=(const Map& other) const noexcept
+bool Map<Key, Value, Compare>::operator!=(const Map& other) const
 {
     return !(*this == other);
 }
@@ -606,7 +606,7 @@ std::pair<typename Map<Key, Value, Compare>::Iterator, bool> Map<Key, Value, Com
 }
 
 template <class Key, class Value, class Compare>
-Map<Key, Value, Compare>::Iterator Map<Key, Value, Compare>::Find(const Key& key) const noexcept
+Map<Key, Value, Compare>::Iterator Map<Key, Value, Compare>::Find(const Key& key) const
 {
     std::function<Iterator(Node* node)> FindNode;
     FindNode = [&](Node* node)->Iterator
@@ -634,13 +634,13 @@ Map<Key, Value, Compare>::Iterator Map<Key, Value, Compare>::Find(const Key& key
 }
 
 template <class Key, class Value, class Compare>
-Map<Key, Value, Compare>::size_type Map<Key, Value, Compare>::Count(const Key& key) const noexcept
+Map<Key, Value, Compare>::size_type Map<Key, Value, Compare>::Count(const Key& key) const
 {
     return Find(key) != End() ? 1u : 0u;
 }
 
 template <class Key, class Value, class Compare>
-bool Map<Key, Value, Compare>::Contains(const Key& key) const noexcept
+bool Map<Key, Value, Compare>::Contains(const Key& key) const
 {
     return Find(key) != End();
 }
@@ -840,7 +840,7 @@ void Map<Key, Value, Compare>::Swap(Map& other) noexcept
 }
 
 template <class Key, class Value, class Compare>
-Map<Key, Value, Compare>::size_type Map<Key, Value, Compare>::Depth() const noexcept
+Map<Key, Value, Compare>::size_type Map<Key, Value, Compare>::Depth() const
 {
     std::function<size_type(Node* node)> Depth;
     Depth = [&](Node* node)->size_type
@@ -870,7 +870,7 @@ Map<Key, Value, Compare>::size_type Map<Key, Value, Compare>::Size() const noexc
 }
 
 template <class Key, class Value, class Compare>
-void Map<Key, Value, Compare>::Clear() noexcept
+void Map<Key, Value, Compare>::Clear()
 {
     std::function<void(Node* node)> Clear;
     Clear = [&](Node* node)
@@ -892,13 +892,13 @@ void Map<Key, Value, Compare>::Clear() noexcept
 }
 
 template <class Key, class Value, class Compare>
-Map<Key, Value, Compare>::Iterator Map<Key, Value, Compare>::Begin() noexcept
+Map<Key, Value, Compare>::Iterator Map<Key, Value, Compare>::Begin()
 {
     return _begin ? Iterator(*this, _begin) : Iterator(*this, _end);
 }
 
 template <class Key, class Value, class Compare>
-Map<Key, Value, Compare>::Iterator Map<Key, Value, Compare>::End() noexcept
+Map<Key, Value, Compare>::Iterator Map<Key, Value, Compare>::End()
 {
     return Iterator(*this, _end);
 }
@@ -932,13 +932,13 @@ auto Map<Key, Value, Compare>::CEnd() const noexcept -> Map<Key, Value, Compare>
 }
 
 template <class Key, class Value, class Compare>
-Map<Key, Value, Compare>::ReverseIterator Map<Key, Value, Compare>::RBegin() noexcept
+Map<Key, Value, Compare>::ReverseIterator Map<Key, Value, Compare>::RBegin()
 {
     return _end->parent ? ReverseIterator(*this, _end->parent) : ReverseIterator(*this, _end);
 }
 
 template <class Key, class Value, class Compare>
-Map<Key, Value, Compare>::ReverseIterator Map<Key, Value, Compare>::REnd() noexcept
+Map<Key, Value, Compare>::ReverseIterator Map<Key, Value, Compare>::REnd()
 {
     return _begin ? ReverseIterator(*this, _begin) : ReverseIterator(*this, _end);
 }

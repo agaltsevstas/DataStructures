@@ -5,44 +5,45 @@ template<class T>
 class ReverseIterator
 {
 public:
-    explicit ReverseIterator(T* ptr) noexcept: _ptr(ptr) {}
+    explicit ReverseIterator(T* ptr):
+    _ptr(ptr) {}
     operator T*()
     {
         return _ptr;
     }
     
-    ReverseIterator& operator++() noexcept
+    ReverseIterator& operator++()
     {
         --_ptr;
         return *this;
     }
     
-    ReverseIterator operator++(int) noexcept
+    ReverseIterator operator++(int)
     {
         ReverseIterator tmp(_ptr);
         --_ptr;
         return tmp;
     }
     
-    ReverseIterator& operator--() noexcept
+    ReverseIterator& operator--()
     {
         ++_ptr;
         return *this;
     }
     
-    ReverseIterator operator--(int) noexcept
+    ReverseIterator operator--(int)
     {
         ReverseIterator tmp(_ptr);
         ++_ptr;
         return tmp;
     }
     
-    T operator*() noexcept
+    T operator*()
     {
         return *_ptr;
     }
     
-    bool operator!=(ReverseIterator& other) const noexcept
+    bool operator!=(ReverseIterator& other) const
     {
         return _ptr != other._ptr;
     }

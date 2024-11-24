@@ -60,7 +60,7 @@ namespace tuple
             _head(std::forward<UHead>(head)),
             _tail(std::forward<UTail>(tail)...) {}
             
-            constexpr size_t Size() const { return value; }
+            constexpr size_t Size() const noexcept { return value; }
         public:
             constexpr static size_t value = 1u + Tuple<Tail...>::value;
             
@@ -157,7 +157,7 @@ namespace tuple
             _head(std::forward<UHead>(head))
             {}
             
-            constexpr size_t Size() const { return value; }
+            constexpr size_t Size() const noexcept { return value; }
         public:
             constexpr static size_t value = 1u + Tuple<Tail...>::value;
             
@@ -204,7 +204,7 @@ namespace tuple
         };
 
         template<size_t index, typename Head, typename... Tail>
-        decltype(auto) Get(const Tuple<Head, Tail...>& tuple) // decltype(auto) - не отбрасывает ссылки и возвращает lvalue, иначе rvalue
+        decltype(auto) Get(const Tuple<Head, Tail...>& tuple) noexcept// decltype(auto) - не отбрасывает ссылки и возвращает lvalue, иначе rvalue
         {
             return GetHelper<index, Head, Tail...>::value(tuple);
         }
@@ -266,7 +266,7 @@ namespace tuple
             explicit Tuple(typename TupleTraits<Args>::ParamType... args):
             TupleBase<Args...>(args...) {}
             
-            constexpr size_t Size() const { return value; }
+            constexpr size_t Size() const noexcept { return value; }
         public:
             constexpr static size_t value = sizeof...(Args);
         };
@@ -285,8 +285,8 @@ namespace tuple
         {
             TupleLeaf() {}
             explicit TupleLeaf(typename TupleTraits<Leaf>::ParamType leaf) : _leaf(leaf) {}
-            Leaf& Get() { return _leaf; }
-            const Leaf& Get() const { return _leaf; }
+            Leaf& Get() noexcept { return _leaf; }
+            const Leaf& Get() const noexcept { return _leaf; }
             
             /// EBO (empty base optimization) - гарантирует размер любого объекта/подъекта должен быть не менее 1 байта, даже если тип является пустым, чтобы можно было получить разные адреса разных объектов одного и того же типа.
             [[no_unique_address]] Leaf _leaf;
@@ -301,13 +301,13 @@ namespace tuple
         };
 
         template <size_t index, typename T>
-        T& Get(TupleLeaf<index, T>& leaf)
+        T& Get(TupleLeaf<index, T>& leaf) noexcept
         {
             return leaf.Get();
         }
 
         template <size_t index, typename T>
-        const T& Get(const TupleLeaf<index, T>& leaf)
+        const T& Get(const TupleLeaf<index, T>& leaf) noexcept
         {
             return leaf.Get();
         }

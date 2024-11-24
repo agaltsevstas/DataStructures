@@ -41,7 +41,7 @@ class Custom_Vector<bool>
     using value_type = char;
     using size_type = std::size_t;
 public:
-    Custom_Vector(size_type count, const bool& value) noexcept
+    Custom_Vector(size_type count, const bool& value)
     {
         _size = count;
         _capacity = GetCapacityValueForAllocatedSpace(count);
@@ -60,12 +60,12 @@ public:
 private:
     struct BitReference // Хранит указатель ячейку в VectorBool
     {
-        constexpr BitReference(value_type& iValue, value_type iMask) noexcept :
+        constexpr BitReference(value_type& iValue, value_type iMask) :
         value(iValue),
         mask(iMask)
         { }
         
-        constexpr BitReference& operator=(bool b) noexcept
+        constexpr BitReference& operator=(bool b)
         {
             if (b)
                 // поразрядное ИЛИ
@@ -77,18 +77,18 @@ private:
             return *this;
         }
 
-        constexpr BitReference& operator=(const BitReference& b) noexcept
+        constexpr BitReference& operator=(const BitReference& b)
         {
             return *this = bool(b);
         }
 
-        constexpr operator bool() const noexcept
+        constexpr operator bool() const
         {
             // поразрядное И
             return !!(value & mask);
         }
 
-        constexpr void flip() noexcept
+        constexpr void flip()
         {
             // поразрядное исключающее ИЛИ
             value ^= mask; // Инвертирование
@@ -122,12 +122,12 @@ private:
         return static_cast<size_type>(std::ceil(static_cast<double>(count) / static_cast<double>(GetBlockCapacity())));
     }
     
-    inline size_type GetCapacityValueForAllocatedSpace(size_type count) const noexcept
+    inline size_type GetCapacityValueForAllocatedSpace(size_type count) const
     {
         return GetNumberOfBlocksTypeToAllocateSpace(count) * GetBlockCapacity();
     }
     
-    constexpr std::pair<size_type, size_type> GetBlockWithBitAndMask(size_type index) const noexcept
+    constexpr std::pair<size_type, size_type> GetBlockWithBitAndMask(size_type index) const
     {
         const auto blockWithBit = index / GetBlockCapacity();
         const auto bitPositionInBlock = index % GetBlockCapacity();

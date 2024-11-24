@@ -60,8 +60,8 @@ public:
     size_type Capacity() const noexcept;
     void Reserve(size_type capacity);
     void Shrink_To_Fit();
-    iterator Data() noexcept;
-    const_iterator Data() const noexcept;
+    iterator Data();
+    const_iterator Data() const;
     void Fill(const value_type& value) noexcept;
     void Clear() noexcept;
     
@@ -71,15 +71,15 @@ public:
     iterator Erase(const_iterator it);
     iterator Erase(const_iterator begin, const_iterator end);
     
-    iterator Begin() noexcept;
-    iterator End() noexcept;
+    iterator Begin();
+    iterator End();
     const_iterator Begin() const noexcept;
     const_iterator End() const noexcept;
     const_iterator CBegin() const noexcept;
     const_iterator CEnd() const noexcept;
     
-    reverse_iterator RBegin() noexcept;
-    reverse_iterator REnd() noexcept;
+    reverse_iterator RBegin();
+    reverse_iterator REnd();
     const_reverse_iterator CRBegin() const noexcept;
     const_reverse_iterator CREnd() const noexcept;
     
@@ -522,13 +522,13 @@ void Custom_Vector<T>::Shrink_To_Fit()
 }
 
 template <class T>
-Custom_Vector<T>::iterator Custom_Vector<T>::Data() noexcept
+Custom_Vector<T>::iterator Custom_Vector<T>::Data()
 {
     return _data;
 }
 
 template <class T>
-Custom_Vector<T>::const_iterator Custom_Vector<T>::Data() const noexcept
+Custom_Vector<T>::const_iterator Custom_Vector<T>::Data() const
 {
     return _data;
 }
@@ -671,13 +671,13 @@ Custom_Vector<T>::iterator Custom_Vector<T>::Erase(Custom_Vector<T>::const_itera
 }
 
 template <class T>
-Custom_Vector<T>::iterator Custom_Vector<T>::Begin() noexcept
+Custom_Vector<T>::iterator Custom_Vector<T>::Begin()
 {
     return iterator(Data());
 };
 
 template <class T>
-Custom_Vector<T>::iterator Custom_Vector<T>::End() noexcept
+Custom_Vector<T>::iterator Custom_Vector<T>::End()
 {
     return iterator(Data() + _size);
 };
@@ -707,13 +707,13 @@ Custom_Vector<T>::const_iterator Custom_Vector<T>::CEnd() const noexcept
 };
 
 template <class T>
-Custom_Vector<T>::reverse_iterator Custom_Vector<T>::RBegin() noexcept
+Custom_Vector<T>::reverse_iterator Custom_Vector<T>::RBegin()
 {
     return reverse_iterator(&_data[0] + _size - 1);
 }
 
 template <class T>
-Custom_Vector<T>::reverse_iterator Custom_Vector<T>::REnd() noexcept
+Custom_Vector<T>::reverse_iterator Custom_Vector<T>::REnd()
 {
     return reverse_iterator(&_data[0] - 1);
 }

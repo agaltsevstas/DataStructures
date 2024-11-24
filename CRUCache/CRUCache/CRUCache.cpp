@@ -16,7 +16,7 @@ class LRUCache
     using Nodes = std::unordered_map<TKey, Node*>;
 
 public:
-    LRUCache(int capacity) noexcept;
+    LRUCache(int capacity);
     ~LRUCache();
     TValue get(const TKey& key);
     void put(const TKey& key, const TValue& value);
@@ -32,7 +32,7 @@ private:
 };
 
 template <typename TKey, typename TValue>
-LRUCache<TKey, TValue>::LRUCache(int capacity) noexcept : 
+LRUCache<TKey, TValue>::LRUCache(int capacity):
 _capacity(capacity)
 {
     

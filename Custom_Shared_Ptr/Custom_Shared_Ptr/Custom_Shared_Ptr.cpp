@@ -49,13 +49,13 @@ namespace STD
         Custom_Shared_Ptr() noexcept;
         Custom_Shared_Ptr(decltype(nullptr)) noexcept;
         template <typename Deleter = Default_Deleter<element_type>>
-        explicit Custom_Shared_Ptr(element_type* iObject, Deleter deleter = Deleter()) noexcept;
+        explicit Custom_Shared_Ptr(element_type* iObject, Deleter deleter = Deleter());
         /// Конструктор копирования
         Custom_Shared_Ptr(const Custom_Shared_Ptr& other);
         /// Конструктор перемещеиня
         Custom_Shared_Ptr(Custom_Shared_Ptr&& other) noexcept;
         /// Деструктор
-        ~Custom_Shared_Ptr() noexcept;
+        ~Custom_Shared_Ptr();
         /// Оператор копирования
         Custom_Shared_Ptr& operator=(const Custom_Shared_Ptr& other);
         /// Оператор перемещения
@@ -103,7 +103,7 @@ namespace STD
 
     template <class TClass>
     template <typename Deleter>
-    Custom_Shared_Ptr<TClass>::Custom_Shared_Ptr(element_type* ptr, Deleter deleter) noexcept :
+    Custom_Shared_Ptr<TClass>::Custom_Shared_Ptr(element_type* ptr, Deleter deleter) :
     _ptr(ptr),
     _count(ptr ? new uint64_t(1) : nullptr),
     _deleter(deleter)
@@ -129,7 +129,7 @@ namespace STD
 
     /// Деструктор
     template <class TClass>
-    Custom_Shared_Ptr<TClass>::~Custom_Shared_Ptr() noexcept
+    Custom_Shared_Ptr<TClass>::~Custom_Shared_Ptr()
     {
         if (_count)
         {
